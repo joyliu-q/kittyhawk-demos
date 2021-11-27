@@ -1,0 +1,32 @@
+{
+  "name": "kittyhawk-demo",
+  "version": "1.0.0",
+  "main": "main.js",
+  "types": "main.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "import": "cdk8s import",
+    "synth": "cdk8s synth",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "build": "yarn compile && yarn synth",
+    "upgrade": "npm i cdk8s@latest cdk8s-cli@latest",
+    "upgrade:next": "npm i cdk8s@next cdk8s-cli@next"
+  },
+  "dependencies": {
+    "cdk8s": "^1.1.39",
+    "cdk8s-plus-22": "^1.0.0-beta.45",
+    "constructs": "^3.3.161",
+    "cron-time-generator": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.9",
+    "cdk8s-cli": "^1.0.35",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2"
+  }
+}
