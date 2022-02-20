@@ -11,7 +11,9 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "build": "yarn compile && yarn synth",
+    "build-clubs": "export RELEASE_NAME=\"penn-clubs\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
+    "build-courses": "export RELEASE_NAME=\"penn-courses\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
+    "build-ohq": "export RELEASE_NAME=\"ohq\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
     "upgrade": "npm i cdk8s@latest cdk8s-cli@latest",
     "upgrade:next": "npm i cdk8s@next cdk8s-cli@next"
   },

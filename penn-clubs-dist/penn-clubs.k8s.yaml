@@ -1,0 +1,763 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: penn-clubs-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-redis
+  name: penn-clubs-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-clubs-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TESTSHA
+          image: redis:6.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-django-asgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-django-asgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-django-asgi
+  name: penn-clubs-django-asgi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: penn-clubs-django-asgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-django-asgi
+    spec:
+      containers:
+        - command:
+            - /usr/local/bin/asgi-run
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: DOMAIN
+              value: pennclubs.com
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-django-asgi
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-django-asgi
+                port:
+                  number: 80
+            path: /api/ws
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-django-wsgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-django-wsgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-django-wsgi
+  name: penn-clubs-django-wsgi
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      name: penn-clubs-django-wsgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-django-wsgi
+    spec:
+      containers:
+        - env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: DOMAIN
+              value: pennclubs.com
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-django-wsgi
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-django-wsgi
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-react
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-react
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-react
+  name: penn-clubs-react
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: penn-clubs-react
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-react
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: pennclubs.com
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-frontend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-react
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-react
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-hub-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: penn-clubs-hub-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-hub-redis
+  name: penn-clubs-hub-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-clubs-hub-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-hub-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TESTSHA
+          image: redis:6.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-hub-django-asgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-hub-django-asgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-hub-django-asgi
+  name: penn-clubs-hub-django-asgi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: penn-clubs-hub-django-asgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-hub-django-asgi
+    spec:
+      containers:
+        - command:
+            - /usr/local/bin/asgi-run
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: DOMAIN
+              value: hub.provost.upenn.edu
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-hub-django-asgi
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-hub-django-asgi
+                port:
+                  number: 80
+            path: /api/ws
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-hub-django-wsgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-hub-django-wsgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-hub-django-wsgi
+  name: penn-clubs-hub-django-wsgi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: penn-clubs-hub-django-wsgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-hub-django-wsgi
+    spec:
+      containers:
+        - env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: DOMAIN
+              value: hub.provost.upenn.edu
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-hub-django-wsgi
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-hub-django-wsgi
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-clubs-hub-react
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-clubs-hub-react
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-clubs-hub-react
+  name: penn-clubs-hub-react
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: penn-clubs-hub-react
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-clubs-hub-react
+    spec:
+      containers:
+        - env:
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
+            - name: DOMAIN
+              value: hub.provost.upenn.edu
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/penn-clubs-frontend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-clubs-hub-react
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-clubs-hub-react
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-rank-clubs
+  name: penn-clubs-rank-clubs
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - rank
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 8 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-daily-notifications
+  name: penn-clubs-daily-notifications
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - daily_notifications
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 13 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-hub-daily-notifications
+  name: penn-clubs-hub-daily-notifications
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - daily_notifications
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 13 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-calendar-import
+  name: penn-clubs-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_calendar_events
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-hub-calendar-import
+  name: penn-clubs-hub-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_calendar_events
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-clubs-hub-paideia-calendar-import
+  name: penn-clubs-hub-paideia-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_paideia_events
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1

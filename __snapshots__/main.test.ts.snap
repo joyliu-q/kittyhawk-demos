@@ -1,3 +1,681 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Placeholder Empty 1`] = `Array []`;
+exports[`Placeholder Empty 1`] = `
+Array [
+  Object {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": Object {
+      "name": "undefined_release-django-asgi",
+    },
+    "spec": Object {
+      "ports": Array [
+        Object {
+          "port": 80,
+          "targetPort": 80,
+        },
+      ],
+      "selector": Object {
+        "name": "undefined_release-django-asgi",
+      },
+      "type": "ClusterIP",
+    },
+  },
+  Object {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-django-asgi",
+      },
+      "name": "undefined_release-django-asgi",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "replicas": 2,
+      "selector": Object {
+        "matchLabels": Object {
+          "name": "undefined_release-django-asgi",
+        },
+      },
+      "strategy": Object {
+        "rollingUpdate": Object {
+          "maxSurge": 3,
+        },
+        "type": "RollingUpdate",
+      },
+      "template": Object {
+        "metadata": Object {
+          "labels": Object {
+            "name": "undefined_release-django-asgi",
+          },
+        },
+        "spec": Object {
+          "containers": Array [
+            Object {
+              "command": Array [
+                "/usr/local/bin/asgi-run",
+              ],
+              "env": Array [
+                Object {
+                  "name": "DJANGO_SETTINGS_MODULE",
+                  "value": "officehoursqueue.settings.production",
+                },
+                Object {
+                  "name": "DOMAIN",
+                  "value": "ohq.io",
+                },
+                Object {
+                  "name": "GIT_SHA",
+                  "value": "wow",
+                },
+              ],
+              "image": "pennlabs/office-hours-queue-backend:wow",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "worker",
+              "ports": Array [
+                Object {
+                  "containerPort": 80,
+                },
+              ],
+            },
+          ],
+          "volumes": Array [],
+        },
+      },
+    },
+  },
+  Object {
+    "apiVersion": "networking.k8s.io/v1beta1",
+    "kind": "Ingress",
+    "metadata": Object {
+      "name": "undefined_release-django-asgi",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "rules": Array [
+        Object {
+          "host": "ohq.io",
+          "http": Object {
+            "paths": Array [
+              Object {
+                "backend": Object {
+                  "serviceName": "undefined_release-django-asgi",
+                  "servicePort": 80,
+                },
+                "path": "/api/ws",
+              },
+            ],
+          },
+        },
+      ],
+      "tls": Array [
+        Object {
+          "hosts": Array [
+            "ohq.io",
+          ],
+          "secretName": "ohq-io-tls",
+        },
+      ],
+    },
+  },
+  Object {
+    "apiVersion": "cert-manager.io/v1alpha2",
+    "kind": "Certificate",
+    "metadata": Object {
+      "name": "ohq-io",
+    },
+    "spec": Object {
+      "dnsNames": Array [
+        "ohq.io",
+        "*.ohq.io",
+      ],
+      "issuerRef": Object {
+        "group": "cert-manager.io",
+        "kind": "ClusterIssuer",
+        "name": "wildcard-letsencrypt-prod",
+      },
+      "secretName": "ohq-io-tls",
+    },
+  },
+  Object {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": Object {
+      "name": "undefined_release-django-wsgi",
+    },
+    "spec": Object {
+      "ports": Array [
+        Object {
+          "port": 80,
+          "targetPort": 80,
+        },
+      ],
+      "selector": Object {
+        "name": "undefined_release-django-wsgi",
+      },
+      "type": "ClusterIP",
+    },
+  },
+  Object {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-django-wsgi",
+      },
+      "name": "undefined_release-django-wsgi",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "replicas": 4,
+      "selector": Object {
+        "matchLabels": Object {
+          "name": "undefined_release-django-wsgi",
+        },
+      },
+      "strategy": Object {
+        "rollingUpdate": Object {
+          "maxSurge": 3,
+        },
+        "type": "RollingUpdate",
+      },
+      "template": Object {
+        "metadata": Object {
+          "labels": Object {
+            "name": "undefined_release-django-wsgi",
+          },
+        },
+        "spec": Object {
+          "containers": Array [
+            Object {
+              "env": Array [
+                Object {
+                  "name": "DJANGO_SETTINGS_MODULE",
+                  "value": "officehoursqueue.settings.production",
+                },
+                Object {
+                  "name": "DOMAIN",
+                  "value": "ohq.io",
+                },
+                Object {
+                  "name": "GIT_SHA",
+                  "value": "wow",
+                },
+              ],
+              "image": "pennlabs/office-hours-queue-backend:wow",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "worker",
+              "ports": Array [
+                Object {
+                  "containerPort": 80,
+                },
+              ],
+            },
+          ],
+          "volumes": Array [],
+        },
+      },
+    },
+  },
+  Object {
+    "apiVersion": "networking.k8s.io/v1beta1",
+    "kind": "Ingress",
+    "metadata": Object {
+      "name": "undefined_release-django-wsgi",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "rules": Array [
+        Object {
+          "host": "ohq.io",
+          "http": Object {
+            "paths": Array [
+              Object {
+                "backend": Object {
+                  "serviceName": "undefined_release-django-wsgi",
+                  "servicePort": 80,
+                },
+                "path": "/api",
+              },
+              Object {
+                "backend": Object {
+                  "serviceName": "undefined_release-django-wsgi",
+                  "servicePort": 80,
+                },
+                "path": "/admin",
+              },
+              Object {
+                "backend": Object {
+                  "serviceName": "undefined_release-django-wsgi",
+                  "servicePort": 80,
+                },
+                "path": "/assets",
+              },
+            ],
+          },
+        },
+      ],
+      "tls": Array [
+        Object {
+          "hosts": Array [
+            "ohq.io",
+          ],
+          "secretName": "ohq-io-tls",
+        },
+      ],
+    },
+  },
+  Object {
+    "apiVersion": "cert-manager.io/v1alpha2",
+    "kind": "Certificate",
+    "metadata": Object {
+      "name": "ohq-io",
+    },
+    "spec": Object {
+      "dnsNames": Array [
+        "ohq.io",
+        "*.ohq.io",
+      ],
+      "issuerRef": Object {
+        "group": "cert-manager.io",
+        "kind": "ClusterIssuer",
+        "name": "wildcard-letsencrypt-prod",
+      },
+      "secretName": "ohq-io-tls",
+    },
+  },
+  Object {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": Object {
+      "name": "undefined_release-react",
+    },
+    "spec": Object {
+      "ports": Array [
+        Object {
+          "port": 80,
+          "targetPort": 80,
+        },
+      ],
+      "selector": Object {
+        "name": "undefined_release-react",
+      },
+      "type": "ClusterIP",
+    },
+  },
+  Object {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-react",
+      },
+      "name": "undefined_release-react",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "replicas": 2,
+      "selector": Object {
+        "matchLabels": Object {
+          "name": "undefined_release-react",
+        },
+      },
+      "strategy": Object {
+        "rollingUpdate": Object {
+          "maxSurge": 3,
+        },
+        "type": "RollingUpdate",
+      },
+      "template": Object {
+        "metadata": Object {
+          "labels": Object {
+            "name": "undefined_release-react",
+          },
+        },
+        "spec": Object {
+          "containers": Array [
+            Object {
+              "env": Array [
+                Object {
+                  "name": "DOMAIN",
+                  "value": "ohq.io",
+                },
+                Object {
+                  "name": "PORT",
+                  "value": "80",
+                },
+                Object {
+                  "name": "GIT_SHA",
+                  "value": "wow",
+                },
+              ],
+              "image": "pennlabs/office-hours-queue-frontend:wow",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "worker",
+              "ports": Array [
+                Object {
+                  "containerPort": 80,
+                },
+              ],
+            },
+          ],
+          "volumes": Array [],
+        },
+      },
+    },
+  },
+  Object {
+    "apiVersion": "networking.k8s.io/v1beta1",
+    "kind": "Ingress",
+    "metadata": Object {
+      "name": "undefined_release-react",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "rules": Array [
+        Object {
+          "host": "ohq.io",
+          "http": Object {
+            "paths": Array [
+              Object {
+                "backend": Object {
+                  "serviceName": "undefined_release-react",
+                  "servicePort": 80,
+                },
+                "path": "/",
+              },
+            ],
+          },
+        },
+      ],
+      "tls": Array [
+        Object {
+          "hosts": Array [
+            "ohq.io",
+          ],
+          "secretName": "ohq-io-tls",
+        },
+      ],
+    },
+  },
+  Object {
+    "apiVersion": "cert-manager.io/v1alpha2",
+    "kind": "Certificate",
+    "metadata": Object {
+      "name": "ohq-io",
+    },
+    "spec": Object {
+      "dnsNames": Array [
+        "ohq.io",
+        "*.ohq.io",
+      ],
+      "issuerRef": Object {
+        "group": "cert-manager.io",
+        "kind": "ClusterIssuer",
+        "name": "wildcard-letsencrypt-prod",
+      },
+      "secretName": "ohq-io-tls",
+    },
+  },
+  Object {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": Object {
+      "name": "undefined_release-redis",
+    },
+    "spec": Object {
+      "ports": Array [
+        Object {
+          "port": 6379,
+          "targetPort": 6379,
+        },
+      ],
+      "selector": Object {
+        "name": "undefined_release-redis",
+      },
+      "type": "ClusterIP",
+    },
+  },
+  Object {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-redis",
+      },
+      "name": "undefined_release-redis",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "replicas": 1,
+      "selector": Object {
+        "matchLabels": Object {
+          "name": "undefined_release-redis",
+        },
+      },
+      "strategy": Object {
+        "rollingUpdate": Object {
+          "maxSurge": 3,
+        },
+        "type": "RollingUpdate",
+      },
+      "template": Object {
+        "metadata": Object {
+          "labels": Object {
+            "name": "undefined_release-redis",
+          },
+        },
+        "spec": Object {
+          "containers": Array [
+            Object {
+              "env": Array [
+                Object {
+                  "name": "GIT_SHA",
+                  "value": "wow",
+                },
+              ],
+              "image": "redis:6.0",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "worker",
+              "ports": Array [
+                Object {
+                  "containerPort": 80,
+                },
+              ],
+            },
+          ],
+          "volumes": Array [],
+        },
+      },
+    },
+  },
+  Object {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": Object {
+      "name": "undefined_release-celery",
+    },
+    "spec": Object {
+      "ports": Array [
+        Object {
+          "port": 80,
+          "targetPort": 80,
+        },
+      ],
+      "selector": Object {
+        "name": "undefined_release-celery",
+      },
+      "type": "ClusterIP",
+    },
+  },
+  Object {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-celery",
+      },
+      "name": "undefined_release-celery",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "replicas": 1,
+      "selector": Object {
+        "matchLabels": Object {
+          "name": "undefined_release-celery",
+        },
+      },
+      "strategy": Object {
+        "rollingUpdate": Object {
+          "maxSurge": 3,
+        },
+        "type": "RollingUpdate",
+      },
+      "template": Object {
+        "metadata": Object {
+          "labels": Object {
+            "name": "undefined_release-celery",
+          },
+        },
+        "spec": Object {
+          "containers": Array [
+            Object {
+              "command": Array [
+                "celery",
+                "-A",
+                "officehoursqueue",
+                "worker",
+                "-lINFO",
+              ],
+              "env": Array [
+                Object {
+                  "name": "DJANGO_SETTINGS_MODULE",
+                  "value": "officehoursqueue.settings.production",
+                },
+                Object {
+                  "name": "DOMAIN",
+                  "value": "ohq.io",
+                },
+                Object {
+                  "name": "GIT_SHA",
+                  "value": "wow",
+                },
+              ],
+              "image": "pennlabs/office-hours-queue-backend:wow",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "worker",
+              "ports": Array [
+                Object {
+                  "containerPort": 80,
+                },
+              ],
+            },
+          ],
+          "volumes": Array [],
+        },
+      },
+    },
+  },
+  Object {
+    "apiVersion": "networking.k8s.io/v1beta1",
+    "kind": "Ingress",
+    "metadata": Object {
+      "name": "undefined_release-celery",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "rules": Array [
+        Object {
+          "host": "ohq.io",
+          "http": Object {
+            "paths": Array [],
+          },
+        },
+      ],
+      "tls": Array [
+        Object {
+          "hosts": Array [
+            "ohq.io",
+          ],
+          "secretName": "ohq-io-tls",
+        },
+      ],
+    },
+  },
+  Object {
+    "apiVersion": "cert-manager.io/v1alpha2",
+    "kind": "Certificate",
+    "metadata": Object {
+      "name": "ohq-io",
+    },
+    "spec": Object {
+      "dnsNames": Array [
+        "ohq.io",
+        "*.ohq.io",
+      ],
+      "issuerRef": Object {
+        "group": "cert-manager.io",
+        "kind": "ClusterIssuer",
+        "name": "wildcard-letsencrypt-prod",
+      },
+      "secretName": "ohq-io-tls",
+    },
+  },
+  Object {
+    "apiVersion": "batch/v1beta1",
+    "kind": "CronJob",
+    "metadata": Object {
+      "labels": Object {
+        "name": "undefined_release-calculate-waits",
+      },
+      "name": "undefined_release-calculate-waits",
+      "namespace": "default",
+    },
+    "spec": Object {
+      "failedJobsHistoryLimit": 1,
+      "jobTemplate": Object {
+        "spec": Object {
+          "template": Object {
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "command": Array [
+                    "python",
+                    "manage.py",
+                    "calculatewaittimes",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "GIT_SHA",
+                      "value": "wow",
+                    },
+                  ],
+                  "envFrom": Array [
+                    Object {
+                      "secretRef": Object {
+                        "name": "office-hours-queue",
+                      },
+                    },
+                  ],
+                  "image": "pennlabs/office-hours-queue-backend:wow",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "worker",
+                  "ports": Array [
+                    Object {
+                      "containerPort": 80,
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+            },
+          },
+        },
+      },
+      "schedule": "lol * * * *",
+      "successfulJobsHistoryLimit": 1,
+    },
+  },
+]
+`;

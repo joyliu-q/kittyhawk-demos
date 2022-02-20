@@ -1,0 +1,793 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: penn-courses-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-redis
+  name: penn-courses-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TESTSHA
+          image: redis:4.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-celery
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-celery
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-celery
+  name: penn-courses-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-celery
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-celery
+    spec:
+      containers:
+        - command:
+            - celery
+            - worker
+            - -A
+            - PennCourses
+            - -Q
+            - alerts,celery
+            - -linfo
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: PennCourses.settings.production
+            - name: DOMAIN
+              value: penncourseplan.com,penncoursealert.com,review.penncourses.org
+            - name: GIT_SHA
+              value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          image: pennlabs/penn-courses-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-courses-celery
+spec:
+  rules:
+    - host: penncourseplan.com
+      http:
+        paths: []
+    - host: penncoursealert.com
+      http:
+        paths: []
+    - host: review.penncourses.org
+      http:
+        paths: []
+  tls:
+    - hosts:
+        - penncourseplan.com
+      secretName: penncourseplan-com-tls
+    - hosts:
+        - penncoursealert.com
+      secretName: penncoursealert-com-tls
+    - hosts:
+        - review.penncourses.org
+      secretName: review-penncourses-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourseplan-com
+spec:
+  dnsNames:
+    - penncourseplan.com
+    - "*.penncourseplan.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourseplan-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncoursealert-com
+spec:
+  dnsNames:
+    - penncoursealert.com
+    - "*.penncoursealert.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursealert-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: review-penncourses-org
+spec:
+  dnsNames:
+    - review.penncourses.org
+    - "*.review.penncourses.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: review-penncourses-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-backend
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-backend
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-backend
+  name: penn-courses-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: penn-courses-backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-backend
+    spec:
+      containers:
+        - command:
+            - celery
+            - worker
+            - -A
+            - PennCourses
+            - -Q
+            - alerts,celery
+            - -linfo
+          env:
+            - name: PORT
+              value: "80"
+            - name: DJANGO_SETTINGS_MODULE
+              value: PennCourses.settings.production
+            - name: DOMAIN
+              value: penncourseplan.com,penncoursealert.com,review.penncourses.org
+            - name: GIT_SHA
+              value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          image: pennlabs/penn-courses-backend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/content-security-policy: frame-ancestors 'none'
+  name: penn-courses-backend
+spec:
+  rules:
+    - host: penncourseplan.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /webhook
+            pathType: Prefix
+    - host: penncoursealert.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /webhook
+            pathType: Prefix
+    - host: review.penncourses.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+          - backend:
+              service:
+                name: penn-courses-backend
+                port:
+                  number: 80
+            path: /webhook
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourseplan.com
+      secretName: penncourseplan-com-tls
+    - hosts:
+        - penncoursealert.com
+      secretName: penncoursealert-com-tls
+    - hosts:
+        - review.penncourses.org
+      secretName: penncourses-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourseplan-com
+spec:
+  dnsNames:
+    - penncourseplan.com
+    - "*.penncourseplan.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourseplan-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncoursealert-com
+spec:
+  dnsNames:
+    - penncoursealert.com
+    - "*.penncoursealert.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursealert-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourses-org
+spec:
+  dnsNames:
+    - penncourses.org
+    - "*.penncourses.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourses-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-landing
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-landing
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-landing
+  name: penn-courses-landing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-landing
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-landing
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncourses.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/pcx-landing:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-courses-landing
+spec:
+  rules:
+    - host: penncourses.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-landing
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourses.org
+      secretName: penncourses-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourses-org
+spec:
+  dnsNames:
+    - penncourses.org
+    - "*.penncourses.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourses-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-plan
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-plan
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-plan
+  name: penn-courses-plan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-plan
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-plan
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncourseplan.com
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/pcp-frontend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-courses-plan
+spec:
+  rules:
+    - host: penncourseplan.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-plan
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourseplan.com
+      secretName: penncourseplan-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourseplan-com
+spec:
+  dnsNames:
+    - penncourseplan.com
+    - "*.penncourseplan.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourseplan-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-alert
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-alert
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-alert
+  name: penn-courses-alert
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-alert
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-alert
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncoursealert.com
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/pca-frontend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-courses-alert
+spec:
+  rules:
+    - host: penncoursealert.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-alert
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncoursealert.com
+      secretName: penncoursealert-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncoursealert-com
+spec:
+  dnsNames:
+    - penncoursealert.com
+    - "*.penncoursealert.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursealert-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penn-courses-review
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: penn-courses-review
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: penn-courses-review
+  name: penn-courses-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: penn-courses-review
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: penn-courses-review
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: review.penncourses.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TESTSHA
+          image: pennlabs/pcr-frontend:TESTSHA
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: penn-courses-review
+spec:
+  rules:
+    - host: review.penncourses.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: penn-courses-review
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - review.penncourses.org
+      secretName: penncourses-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: penncourses-org
+spec:
+  dnsNames:
+    - penncourses.org
+    - "*.penncourses.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourses-org-tls
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-courses-load-courses
+  name: penn-courses-load-courses
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - registrarimport
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+              image: pennlabs/penn-courses-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 3 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: penn-courses-report-stats
+  name: penn-courses-report-stats
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - alertstats
+                - "1"
+                - --slack
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+              image: pennlabs/penn-courses-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 20 * * *
+  successfulJobsHistoryLimit: 1
