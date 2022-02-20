@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { App, Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
+import { ReactApplication, DjangoApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
@@ -8,155 +8,47 @@ export class MyChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
-    const backendImage = 'pennlabs/penn-clubs-backend';
-    const clubsSecret = 'penn-clubs';
-    const fyhSecret = 'first-year-hub';
-    const clubsDomain = 'pennclubs.com';
-    const fyhDomain = 'hub.provost.upenn.edu';
+    const secret = "penn-mobile";
+    const backendImage = "pennlabs/penn-mobile-backend"
+    const frontendImage = "pennlabs/penn-mobile-frontend"
 
-    const clubsDjangoCommon = {
+    new DjangoApplication(this, 'django', {
       deployment: {
         image: backendImage,
-        env: [
-          { name: 'REDIS_HOST', value: 'penn-clubs-redis' },
-        ],
-      },
-      secret: clubsSecret,
-      domains: [{ host: clubsDomain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
-      djangoSettingsModule: 'pennclubs.settings.production',
-    };
-
-    const fyhDjangoCommon = {
-      deployment: {
-        image: backendImage,
-        env: [
-          { name: 'REDIS_HOST', value: 'penn-clubs-hub-redis' },
-          { name: 'NEXT_PUBLIC_SITE_NAME', value: 'fyh' },
-        ],
-      },
-      secret: fyhSecret,
-      domains: [{ host: fyhDomain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
-      djangoSettingsModule: 'pennclubs.settings.production',
-
-    };
-
-
-    new RedisApplication(this, 'redis', {});
-
-    new DjangoApplication(this, 'django-asgi', {
-      ...clubsDjangoCommon,
-      deployment: {
-        image: clubsDjangoCommon.deployment.image,
+        secret,
         cmd: ['/usr/local/bin/asgi-run'],
         replicas: 2,
       },
-      ingressPaths: ['/api/ws'],
-    });
-
-    new DjangoApplication(this, 'django-wsgi', {
-      ...clubsDjangoCommon,
-      deployment: {
-        image: clubsDjangoCommon.deployment.image,
-        replicas: 5,
-      },
-      ingressPaths: ['/api'],
+      // TODO: are any of these subdomains?
+      domains: [
+        { host: 'studentlife.pennlabs.org' },
+        { host: 'pennmobile.org' },
+        { host: 'portal.pennmobile.org' }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
+      // TODO: it seems to be configuring these paths for all of the domains, which is kinda sus
+      ingressPaths: ['/','/api', '/assets'],
+      djangoSettingsModule: 'pennmobile.settings.production',
     });
 
     new ReactApplication(this, 'react', {
       deployment: {
-        image: 'pennlabs/penn-clubs-frontend',
-        replicas: 2,
+        image: frontendImage,
       },
-      domain: clubsDomain,
+      domain: "portal.pennmobile.org",
       ingressPaths: ['/'],
-      portEnv: '80',
     });
 
-    /** FYH */
-
-    new RedisApplication(this, 'hub-redis', {});
-
-    new DjangoApplication(this, 'hub-django-asgi', {
-      ...fyhDjangoCommon,
-      deployment: {
-        image: fyhDjangoCommon.deployment.image,
-        cmd: ['/usr/local/bin/asgi-run'],
-        replicas: 2,
-      },
-      ingressPaths: ['/api/ws'],
-    });
-
-    new DjangoApplication(this, 'hub-django-wsgi', {
-      ...fyhDjangoCommon,
-      deployment: {
-        image: backendImage,
-        replicas: 3,
-      },
-      ingressPaths: ['/api'],
-    });
-
-
-    new ReactApplication(this, 'hub-react', {
-      deployment: {
-        image: 'pennlabs/penn-clubs-frontend',
-        replicas: 2,
-        env: [
-          { name: 'NEXT_PUBLIC_SITE_NAME', value: 'fyh' },
-        ],
-      },
-      domain: fyhDomain,
-      ingressPaths: ['/'],
-      portEnv: '80',
-    });
-
-    /** Cronjobs **/
-
-    new CronJob(this, 'rank-clubs', {
-      schedule: cronTime.everyDayAt(8),
+    new CronJob(this, 'get-laundry-snapshots', {
+      schedule: cronTime.everyHourAt(15),
       image: backendImage,
-      secret: clubsSecret,
-      cmd: ['python', 'manage.py', 'rank'],
-    });
-
-    new CronJob(this, 'daily-notifications', {
-      schedule: cronTime.everyDayAt(13),
-      image: backendImage,
-      secret: clubsSecret,
-      cmd: ['python', 'manage.py', 'daily_notifications'],
-    });
-
-    new CronJob(this, 'hub-daily-notifications', {
-      schedule: cronTime.everyDayAt(13),
-      image: backendImage,
-      secret: fyhSecret,
-      cmd: ['python', 'manage.py', 'daily_notifications'],
-    });
-
-    new CronJob(this, 'calendar-import', {
-      schedule: cronTime.everyDayAt(12),
-      image: backendImage,
-      secret: clubsSecret,
-      cmd: ['python', 'manage.py', 'import_calendar_events'],
-    });
-
-    new CronJob(this, 'hub-calendar-import', {
-      schedule: cronTime.everyDayAt(12),
-      image: backendImage,
-      secret: fyhSecret,
-      cmd: ['python', 'manage.py', 'import_calendar_events'],
-    });
-
-    new CronJob(this, 'hub-paideia-calendar-import', {
-      schedule: cronTime.everyDayAt(12),
-      image: backendImage,
-      secret: fyhSecret,
-      cmd: ["python", "manage.py", "import_paideia_events"],
+      secret,
+      cmd: ["python", "manage.py", "get_snapshot"],
+      env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production"}]
     });
   }
 }
 
 const app = new App();
-new MyChart(app, 'penn-clubs');
+new MyChart(app, 'penn-mobile');
 app.synth();
 
 

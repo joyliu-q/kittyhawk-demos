@@ -11,6 +11,7 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "build-mobile": "export RELEASE_NAME=\"penn-mobile\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
     "build-clubs": "export RELEASE_NAME=\"penn-clubs\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
     "build-courses": "export RELEASE_NAME=\"penn-courses\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",
     "build-ohq": "export RELEASE_NAME=\"ohq\" GIT_SHA=\"TESTSHA\" && yarn compile && yarn synth",

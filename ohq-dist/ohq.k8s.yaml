@@ -17,7 +17,7 @@ metadata:
     name: ohq-django-asgi
   name: ohq-django-asgi
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       name: ohq-django-asgi
@@ -39,15 +39,15 @@ spec:
             - name: DOMAIN
               value: ohq.io
             - name: GIT_SHA
-              value: GITREKT
-          image: pennlabs/office-hours-queue-backend:GITREKT
+              value: TESTSHA
+          image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
             - containerPort: 80
       volumes: []
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ohq-django-asgi
@@ -57,9 +57,12 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: ohq-django-asgi
-              servicePort: 80
+              service:
+                name: ohq-django-asgi
+                port:
+                  number: 80
             path: /api/ws
+            pathType: Prefix
   tls:
     - hosts:
         - ohq.io
@@ -98,7 +101,7 @@ metadata:
     name: ohq-django-wsgi
   name: ohq-django-wsgi
 spec:
-  replicas: 4
+  replicas: 8
   selector:
     matchLabels:
       name: ohq-django-wsgi
@@ -118,15 +121,15 @@ spec:
             - name: DOMAIN
               value: ohq.io
             - name: GIT_SHA
-              value: GITREKT
-          image: pennlabs/office-hours-queue-backend:GITREKT
+              value: TESTSHA
+          image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
             - containerPort: 80
       volumes: []
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ohq-django-wsgi
@@ -136,17 +139,26 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: ohq-django-wsgi
-              servicePort: 80
+              service:
+                name: ohq-django-wsgi
+                port:
+                  number: 80
             path: /api
+            pathType: Prefix
           - backend:
-              serviceName: ohq-django-wsgi
-              servicePort: 80
+              service:
+                name: ohq-django-wsgi
+                port:
+                  number: 80
             path: /admin
+            pathType: Prefix
           - backend:
-              serviceName: ohq-django-wsgi
-              servicePort: 80
+              service:
+                name: ohq-django-wsgi
+                port:
+                  number: 80
             path: /assets
+            pathType: Prefix
   tls:
     - hosts:
         - ohq.io
@@ -205,15 +217,15 @@ spec:
             - name: PORT
               value: "80"
             - name: GIT_SHA
-              value: GITREKT
-          image: pennlabs/office-hours-queue-frontend:GITREKT
+              value: TESTSHA
+          image: pennlabs/office-hours-queue-frontend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
             - containerPort: 80
       volumes: []
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ohq-react
@@ -223,9 +235,12 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: ohq-react
-              servicePort: 80
+              service:
+                name: ohq-react
+                port:
+                  number: 80
             path: /
+            pathType: Prefix
   tls:
     - hosts:
         - ohq.io
@@ -280,7 +295,7 @@ spec:
       containers:
         - env:
             - name: GIT_SHA
-              value: GITREKT
+              value: TESTSHA
           image: redis:6.0
           imagePullPolicy: IfNotPresent
           name: worker
@@ -333,15 +348,15 @@ spec:
             - name: DOMAIN
               value: ohq.io
             - name: GIT_SHA
-              value: GITREKT
-          image: pennlabs/office-hours-queue-backend:GITREKT
+              value: TESTSHA
+          image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
             - containerPort: 80
       volumes: []
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ohq-celery
@@ -369,7 +384,7 @@ spec:
     name: wildcard-letsencrypt-prod
   secretName: ohq-io-tls
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
@@ -388,13 +403,73 @@ spec:
                 - calculatewaittimes
               env:
                 - name: GIT_SHA
-                  value: GITREKT
+                  value: TESTSHA
               envFrom:
                 - secretRef:
                     name: office-hours-queue
-              image: pennlabs/office-hours-queue-backend:GITREKT
+              image: pennlabs/office-hours-queue-backend:TESTSHA
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
-  schedule: lol * * * *
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: ohq-queue-daily-stat
+  name: ohq-queue-daily-stat
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - queue_daily_stat
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: office-hours-queue
+              image: pennlabs/office-hours-queue-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 8 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    name: ohq-queue-heatmap-stat
+  name: ohq-queue-heatmap-stat
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - queue_heatmap_stat
+              env:
+                - name: GIT_SHA
+                  value: TESTSHA
+              envFrom:
+                - secretRef:
+                    name: office-hours-queue
+              image: pennlabs/office-hours-queue-backend:TESTSHA
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 8 * * *
   successfulJobsHistoryLimit: 1
