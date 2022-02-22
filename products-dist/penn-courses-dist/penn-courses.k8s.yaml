@@ -24,6 +24,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -67,6 +68,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -85,8 +87,6 @@ spec:
           env:
             - name: DJANGO_SETTINGS_MODULE
               value: PennCourses.settings.production
-            - name: DOMAIN
-              value: penncourseplan.com,penncoursealert.com,review.penncourses.org
             - name: GIT_SHA
               value: TESTSHA
           envFrom:
@@ -98,74 +98,6 @@ spec:
           ports:
             - containerPort: 80
       volumes: []
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: penn-courses-celery
-spec:
-  rules:
-    - host: penncourseplan.com
-      http:
-        paths: []
-    - host: penncoursealert.com
-      http:
-        paths: []
-    - host: review.penncourses.org
-      http:
-        paths: []
-  tls:
-    - hosts:
-        - penncourseplan.com
-      secretName: penncourseplan-com-tls
-    - hosts:
-        - penncoursealert.com
-      secretName: penncoursealert-com-tls
-    - hosts:
-        - review.penncourses.org
-      secretName: review-penncourses-org-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: penncourseplan-com
-spec:
-  dnsNames:
-    - penncourseplan.com
-    - "*.penncourseplan.com"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: penncourseplan-com-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: penncoursealert-com
-spec:
-  dnsNames:
-    - penncoursealert.com
-    - "*.penncoursealert.com"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: penncoursealert-com-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: review-penncourses-org
-spec:
-  dnsNames:
-    - review.penncourses.org
-    - "*.review.penncourses.org"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: review-penncourses-org-tls
 ---
 apiVersion: v1
 kind: Service
@@ -193,6 +125,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -211,10 +144,10 @@ spec:
           env:
             - name: PORT
               value: "80"
+            - name: DOMAIN
+              value: penncourseplan.com,penncoursealert.com,penncoursereview.com
             - name: DJANGO_SETTINGS_MODULE
               value: PennCourses.settings.production
-            - name: DOMAIN
-              value: penncourseplan.com,penncoursealert.com,review.penncourses.org
             - name: GIT_SHA
               value: TESTSHA
           envFrom:
@@ -231,7 +164,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    ingress.kubernetes.io/content-security-policy: frame-ancestors 'none'
+    ingress.kubernetes.io/content-security-policy: frame-ancestors 'none';
   name: penn-courses-backend
 spec:
   rules:
@@ -311,7 +244,7 @@ spec:
                   number: 80
             path: /webhook
             pathType: Prefix
-    - host: review.penncourses.org
+    - host: penncoursereview.com
       http:
         paths:
           - backend:
@@ -357,12 +290,14 @@ spec:
         - penncoursealert.com
       secretName: penncoursealert-com-tls
     - hosts:
-        - review.penncourses.org
-      secretName: penncourses-org-tls
+        - penncoursereview.com
+      secretName: penncoursereview-com-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: penncourseplan-com
 spec:
   dnsNames:
@@ -377,6 +312,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: penncoursealert-com
 spec:
   dnsNames:
@@ -391,16 +328,18 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: penncourses-org
+  annotations:
+    helm.sh/resource-policy: keep
+  name: penncoursereview-com
 spec:
   dnsNames:
-    - penncourses.org
-    - "*.penncourses.org"
+    - penncoursereview.com
+    - "*.penncoursereview.com"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: penncourses-org-tls
+  secretName: penncoursereview-com-tls
 ---
 apiVersion: v1
 kind: Service
@@ -428,6 +367,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -473,6 +413,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: penncourses-org
 spec:
   dnsNames:
@@ -510,6 +452,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -555,6 +498,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: penncourseplan-com
 spec:
   dnsNames:
@@ -592,6 +537,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -637,6 +583,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: penncoursealert-com
 spec:
   dnsNames:
@@ -674,6 +622,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -683,7 +632,7 @@ spec:
       containers:
         - env:
             - name: DOMAIN
-              value: review.penncourses.org
+              value: penncoursereview.com
             - name: PORT
               value: "80"
             - name: GIT_SHA
@@ -701,7 +650,7 @@ metadata:
   name: penn-courses-review
 spec:
   rules:
-    - host: review.penncourses.org
+    - host: penncoursereview.com
       http:
         paths:
           - backend:
@@ -713,22 +662,24 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - review.penncourses.org
-      secretName: penncourses-org-tls
+        - penncoursereview.com
+      secretName: penncoursereview-com-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: penncourses-org
+  annotations:
+    helm.sh/resource-policy: keep
+  name: penncoursereview-com
 spec:
   dnsNames:
-    - penncourses.org
-    - "*.penncourses.org"
+    - penncoursereview.com
+    - "*.penncoursereview.com"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: penncourses-org-tls
+  secretName: penncoursereview-com-tls
 ---
 apiVersion: batch/v1
 kind: CronJob

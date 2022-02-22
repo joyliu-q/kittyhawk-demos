@@ -1,0 +1,668 @@
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-redis"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: "penn-courses-redis"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-celery"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-celery"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-backend"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-backend"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-landing"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-landing"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-plan"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-plan"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-alert"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-alert"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "penn-courses-review"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "penn-courses-review"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-redis"
+  namespace: default
+  labels:
+    name: "penn-courses-redis"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-redis"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-redis"
+    spec:
+      containers:
+        - name: "worker"
+          image: "redis:4.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-celery"
+  namespace: default
+  labels:
+    name: "penn-courses-celery"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-celery"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-celery"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-courses-backend:latest"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "celery"
+            - "worker"
+            - "-A"
+            - "PennCourses"
+            - "-Q"
+            - "alerts,celery"
+            - "-linfo"
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          env:
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "PennCourses.settings.production"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-backend"
+  namespace: default
+  labels:
+    name: "penn-courses-backend"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: "penn-courses-backend"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-backend"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-courses-backend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          env:
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "PennCourses.settings.production"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-landing"
+  namespace: default
+  labels:
+    name: "penn-courses-landing"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-landing"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-landing"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/pcx-landing:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-plan"
+  namespace: default
+  labels:
+    name: "penn-courses-plan"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-plan"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-plan"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/pcp-frontend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: "PORT"
+              value: "80"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-alert"
+  namespace: default
+  labels:
+    name: "penn-courses-alert"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-alert"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-alert"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/pca-frontend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: "PORT"
+              value: "80"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "penn-courses-review"
+  namespace: default
+  labels:
+    name: "penn-courses-review"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "penn-courses-review"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "penn-courses-review"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/pcr-frontend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "penn-courses-load-courses"
+  namespace: default
+  labels:
+    name: "penn-courses-load-courses"
+spec:
+  schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-courses-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "registrarimport"
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "penn-courses-report-stats"
+  namespace: default
+  labels:
+    name: "penn-courses-report-stats"
+spec:
+  schedule: "0 20 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-courses-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "alertstats"
+                - "1"
+                - "--slack"
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: penn-courses-backend
+  namespace: default
+  annotations:
+    ingress.kubernetes.io/content-security-policy: frame-ancestors 'none';
+spec:
+  rules:
+    - host: "penncourseplan.com"
+      http:
+        paths:
+          - path: "/api"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/admin"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/accounts"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/assets"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+    - host: "penncoursealert.com"
+      http:
+        paths:
+          - path: "/api"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/admin"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/accounts"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/assets"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/webhook"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+    - host: "penncoursereview.com"
+      http:
+        paths:
+          - path: "/api"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/admin"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/accounts"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+          - path: "/assets"
+            backend:
+              serviceName: penn-courses-backend
+              servicePort: 80
+  tls:
+    - hosts:
+        - "penncourseplan.com"
+      secretName: penncourseplan-com-tls
+    - hosts:
+        - "penncoursealert.com"
+      secretName: penncoursealert-com-tls
+    - hosts:
+        - "penncoursereview.com"
+      secretName: penncoursereview-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: penn-courses-landing
+  namespace: default
+spec:
+  rules:
+    - host: "penncourses.org"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: penn-courses-landing
+              servicePort: 80
+  tls:
+    - hosts:
+        - "penncourses.org"
+      secretName: penncourses-org-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: penn-courses-plan
+  namespace: default
+spec:
+  rules:
+    - host: "penncourseplan.com"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: penn-courses-plan
+              servicePort: 80
+  tls:
+    - hosts:
+        - "penncourseplan.com"
+      secretName: penncourseplan-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: penn-courses-alert
+  namespace: default
+spec:
+  rules:
+    - host: "penncoursealert.com"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: penn-courses-alert
+              servicePort: 80
+  tls:
+    - hosts:
+        - "penncoursealert.com"
+      secretName: penncoursealert-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: penn-courses-review
+  namespace: default
+spec:
+  rules:
+    - host: "penncoursereview.com"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: penn-courses-review
+              servicePort: 80
+  tls:
+    - hosts:
+        - "penncoursereview.com"
+      secretName: penncoursereview-com-tls
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncourseplan-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncourseplan-com-tls
+  dnsNames:
+    - "penncourseplan.com"
+    - "*.penncourseplan.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncoursealert-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncoursealert-com-tls
+  dnsNames:
+    - "penncoursealert.com"
+    - "*.penncoursealert.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncoursereview-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncoursereview-com-tls
+  dnsNames:
+    - "penncoursereview.com"
+    - "*.penncoursereview.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncourses-org
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncourses-org-tls
+  dnsNames:
+    - "penncourses.org"
+    - "*.penncourses.org"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncourseplan-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncourseplan-com-tls
+  dnsNames:
+    - "penncourseplan.com"
+    - "*.penncourseplan.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncoursealert-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncoursealert-com-tls
+  dnsNames:
+    - "penncoursealert.com"
+    - "*.penncoursealert.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: penncoursereview-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: penncoursereview-com-tls
+  dnsNames:
+    - "penncoursereview.com"
+    - "*.penncoursereview.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io

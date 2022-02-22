@@ -1,57 +1,94 @@
 import { Construct } from 'constructs';
 import { App, Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
+import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
+// Courses Demo
 export class MyChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
-    const secret = "penn-mobile";
-    const backendImage = "pennlabs/penn-mobile-backend"
-    const frontendImage = "pennlabs/penn-mobile-frontend"
+    const backendImage = 'pennlabs/penn-courses-backend';
+    const secret = 'penn-courses';
 
-    new DjangoApplication(this, 'django', {
+    new RedisApplication(this, 'redis', { deployment: { tag: '4.0' } });
+
+    new DjangoApplication(this, 'celery', {
       deployment: {
         image: backendImage,
-        secret,
-        cmd: ['/usr/local/bin/asgi-run'],
-        replicas: 2,
+        secret: secret,
+        cmd: ['celery', 'worker', '-A', 'PennCourses', '-Q', 'alerts,celery', '-linfo'],
       },
-      // TODO: are any of these subdomains?
-      domains: [
-        { host: 'studentlife.pennlabs.org' },
-        { host: 'pennmobile.org' },
-        { host: 'portal.pennmobile.org' }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
-      // TODO: it seems to be configuring these paths for all of the domains, which is kinda sus
-      ingressPaths: ['/','/api', '/assets'],
-      djangoSettingsModule: 'pennmobile.settings.production',
+      djangoSettingsModule: 'PennCourses.settings.production',
     });
 
-    new ReactApplication(this, 'react', {
+    new DjangoApplication(this, 'backend', {
       deployment: {
-        image: frontendImage,
+        image: backendImage,
+        secret: secret,
+        cmd: ['celery', 'worker', '-A', 'PennCourses', '-Q', 'alerts,celery', '-linfo'],
+        replicas: 3,
+        env: [{ name: 'PORT', value: '80' }],
       },
-      domain: "portal.pennmobile.org",
+      djangoSettingsModule: 'PennCourses.settings.production',
+      ingressPaths: ['/api', '/admin', '/accounts', '/assets', '/webhook'],
+      ingressProps: {
+        annotations: { ['ingress.kubernetes.io/content-security-policy']: "frame-ancestors 'none';" },
+      },
+      domains: [{ host: 'penncourseplan.com' },
+        { host: 'penncoursealert.com' },
+        { host: 'penncoursereview.com' }],
+    });
+
+    new ReactApplication(this, 'landing', {
+      deployment: {
+        image: 'pennlabs/pcx-landing',
+      },
+      domain: 'penncourses.org',
       ingressPaths: ['/'],
     });
 
-    new CronJob(this, 'get-laundry-snapshots', {
-      schedule: cronTime.everyHourAt(15),
+    new ReactApplication(this, 'plan', {
+      deployment: {
+        image: 'pennlabs/pcp-frontend',
+      },
+      domain: 'penncourseplan.com',
+      ingressPaths: ['/'],
+    });
+
+    new ReactApplication(this, 'alert', {
+      deployment: {
+        image: 'pennlabs/pca-frontend',
+      },
+      domain: 'penncoursealert.com',
+      ingressPaths: ['/'],
+    });
+
+    new ReactApplication(this, 'review', {
+      deployment: {
+        image: 'pennlabs/pcr-frontend',
+      },
+      domain: 'penncoursereview.com',
+      ingressPaths: ['/'],
+    });
+
+    new CronJob(this, 'load-courses', {
+      schedule: cronTime.everyDayAt(3),
       image: backendImage,
-      secret,
-      cmd: ["python", "manage.py", "get_snapshot"],
-      env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production"}]
+      secret: secret,
+      cmd: ['python', 'manage.py', 'registrarimport'],
+    });
+
+    new CronJob(this, 'report-stats', {
+      schedule: cronTime.everyDayAt(20),
+      image: backendImage,
+      secret: secret,
+      cmd: ['python', 'manage.py', 'alertstats', '1', '--slack'],
     });
   }
 }
 
 const app = new App();
-new MyChart(app, 'penn-mobile');
+new MyChart(app, 'penn-courses');
 app.synth();
-
-
-
-
-

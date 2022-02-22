@@ -4,6 +4,7 @@ import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '
 
 const cronTime = require('cron-time-generator');
 
+// Courses Demo
 export class MyChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
@@ -20,9 +21,6 @@ export class MyChart extends Chart {
         cmd: ['celery', 'worker', '-A', 'PennCourses', '-Q', 'alerts,celery', '-linfo'],
       },
       djangoSettingsModule: 'PennCourses.settings.production',
-      domains: [{ host: 'penncourseplan.com' },
-        { host: 'penncoursealert.com' },
-        { host: 'review.penncourses.org' }],
     });
 
     new DjangoApplication(this, 'backend', {
@@ -40,7 +38,7 @@ export class MyChart extends Chart {
       },
       domains: [{ host: 'penncourseplan.com' },
         { host: 'penncoursealert.com' },
-        { host: 'review.penncourses.org', isSubdomain: true }],
+        { host: 'penncoursereview.com' }],
     });
 
     new ReactApplication(this, 'landing', {
@@ -71,8 +69,7 @@ export class MyChart extends Chart {
       deployment: {
         image: 'pennlabs/pcr-frontend',
       },
-      domain: 'review.penncourses.org',
-      isSubdomain: true,
+      domain: 'penncoursereview.com',
       ingressPaths: ['/'],
     });
 
