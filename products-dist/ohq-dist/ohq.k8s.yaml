@@ -24,6 +24,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -34,10 +35,10 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: officehoursqueue.settings.production
             - name: DOMAIN
               value: ohq.io
+            - name: DJANGO_SETTINGS_MODULE
+              value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/office-hours-queue-backend:TESTSHA
@@ -71,6 +72,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: ohq-io
 spec:
   dnsNames:
@@ -108,6 +111,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -116,10 +120,10 @@ spec:
     spec:
       containers:
         - env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: officehoursqueue.settings.production
             - name: DOMAIN
               value: ohq.io
+            - name: DJANGO_SETTINGS_MODULE
+              value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/office-hours-queue-backend:TESTSHA
@@ -167,6 +171,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: ohq-io
 spec:
   dnsNames:
@@ -204,6 +210,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -249,6 +256,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: ohq-io
 spec:
   dnsNames:
@@ -286,6 +295,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -300,7 +310,7 @@ spec:
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
-            - containerPort: 80
+            - containerPort: 6379
       volumes: []
 ---
 apiVersion: v1
@@ -329,6 +339,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -343,10 +354,10 @@ spec:
             - worker
             - -lINFO
           env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: officehoursqueue.settings.production
             - name: DOMAIN
               value: ohq.io
+            - name: DJANGO_SETTINGS_MODULE
+              value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/office-hours-queue-backend:TESTSHA
@@ -373,6 +384,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: ohq-io
 spec:
   dnsNames:

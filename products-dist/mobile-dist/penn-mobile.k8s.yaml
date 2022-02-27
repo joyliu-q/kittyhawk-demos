@@ -24,6 +24,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -34,10 +35,10 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: pennmobile.settings.production
             - name: DOMAIN
               value: studentlife.pennlabs.org,pennmobile.org,portal.pennmobile.org
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennmobile.settings.production
             - name: GIT_SHA
               value: TESTSHA
           envFrom:
@@ -142,6 +143,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: studentlife-pennlabs-org
 spec:
   dnsNames:
@@ -156,6 +159,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: pennmobile-org
 spec:
   dnsNames:
@@ -170,6 +175,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: portal-pennmobile-org
 spec:
   dnsNames:
@@ -207,6 +214,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -252,6 +260,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: portal-pennmobile-org
 spec:
   dnsNames:

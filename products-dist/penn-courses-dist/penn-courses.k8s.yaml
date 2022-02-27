@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
-            - containerPort: 80
+            - containerPort: 6379
       volumes: []
 ---
 apiVersion: v1

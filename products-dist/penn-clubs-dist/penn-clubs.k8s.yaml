@@ -24,6 +24,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -38,7 +39,7 @@ spec:
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
-            - containerPort: 80
+            - containerPort: 6379
       volumes: []
 ---
 apiVersion: v1
@@ -67,6 +68,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -77,10 +79,10 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: pennclubs.settings.production
             - name: DOMAIN
               value: pennclubs.com
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/penn-clubs-backend:TESTSHA
@@ -114,6 +116,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: pennclubs-com
 spec:
   dnsNames:
@@ -151,6 +155,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -159,10 +164,10 @@ spec:
     spec:
       containers:
         - env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: pennclubs.settings.production
             - name: DOMAIN
               value: pennclubs.com
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/penn-clubs-backend:TESTSHA
@@ -196,6 +201,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: pennclubs-com
 spec:
   dnsNames:
@@ -233,6 +240,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -278,6 +286,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: pennclubs-com
 spec:
   dnsNames:
@@ -315,6 +325,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -329,7 +340,7 @@ spec:
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
-            - containerPort: 80
+            - containerPort: 6379
       volumes: []
 ---
 apiVersion: v1
@@ -358,6 +369,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -368,10 +380,10 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: pennclubs.settings.production
             - name: DOMAIN
               value: hub.provost.upenn.edu
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/penn-clubs-backend:TESTSHA
@@ -405,6 +417,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -442,6 +456,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -450,10 +465,10 @@ spec:
     spec:
       containers:
         - env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: pennclubs.settings.production
             - name: DOMAIN
               value: hub.provost.upenn.edu
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
           image: pennlabs/penn-clubs-backend:TESTSHA
@@ -487,6 +502,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -524,6 +541,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 3
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -571,6 +589,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  annotations:
+    helm.sh/resource-policy: keep
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
