@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
+import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
@@ -22,7 +22,6 @@ export class ClubsChart extends Chart {
         ],
       },
       secret: clubsSecret,
-      domains: [{ host: clubsDomain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
       djangoSettingsModule: 'pennclubs.settings.production',
     };
 
@@ -35,9 +34,7 @@ export class ClubsChart extends Chart {
         ],
       },
       secret: fyhSecret,
-      domains: [{ host: fyhDomain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
       djangoSettingsModule: 'pennclubs.settings.production',
-
     };
 
 
@@ -50,7 +47,7 @@ export class ClubsChart extends Chart {
         cmd: ['/usr/local/bin/asgi-run'],
         replicas: 2,
       },
-      ingressPaths: ['/api/ws'],
+      domains: [{ host: clubsDomain, paths: ['/api/ws']}],
     });
 
     new DjangoApplication(this, 'django-wsgi', {
@@ -59,7 +56,7 @@ export class ClubsChart extends Chart {
         image: clubsDjangoCommon.deployment.image,
         replicas: 5,
       },
-      ingressPaths: ['/api'],
+      domains: [{ host: clubsDomain, paths: ['/api']}],
     });
 
     new ReactApplication(this, 'react', {
@@ -68,7 +65,7 @@ export class ClubsChart extends Chart {
         replicas: 2,
       },
       domain: clubsDomain,
-      ingressPaths: ['/'],
+      paths: ['/'],
       portEnv: '80',
     });
 
@@ -83,7 +80,7 @@ export class ClubsChart extends Chart {
         cmd: ['/usr/local/bin/asgi-run'],
         replicas: 2,
       },
-      ingressPaths: ['/api/ws'],
+      domains: [{ host: fyhDomain, paths: ['/api/ws'] }],
     });
 
     new DjangoApplication(this, 'hub-django-wsgi', {
@@ -92,7 +89,7 @@ export class ClubsChart extends Chart {
         image: backendImage,
         replicas: 3,
       },
-      ingressPaths: ['/api'],
+      domains: [{ host: fyhDomain, paths: ['/api'] }],
     });
 
 
@@ -105,7 +102,7 @@ export class ClubsChart extends Chart {
         ],
       },
       domain: fyhDomain,
-      ingressPaths: ['/'],
+      paths: ['/'],
       portEnv: '80',
     });
 

@@ -32,13 +32,12 @@ export class CoursesChart extends Chart {
         env: [{ name: 'PORT', value: '80' }],
       },
       djangoSettingsModule: 'PennCourses.settings.production',
-      ingressPaths: ['/api', '/admin', '/accounts', '/assets', '/webhook'],
       ingressProps: {
         annotations: { ['ingress.kubernetes.io/content-security-policy']: "frame-ancestors 'none';" },
       },
-      domains: [{ host: 'penncourseplan.com' },
-        { host: 'penncoursealert.com' },
-        { host: 'penncoursereview.com' }],
+      domains: [{ host: 'penncourseplan.com', paths: ["/api", "/admin", "/accounts", "/assets"] },
+        { host: 'penncoursealert.com', paths: ["/api", "/admin", "/accounts", "/assets", "/webhook"] },
+        { host: 'penncoursereview.com', paths: ["/api", "/admin", "/accounts", "/assets"]}],
     });
 
     new ReactApplication(this, 'landing', {
@@ -46,7 +45,7 @@ export class CoursesChart extends Chart {
         image: 'pennlabs/pcx-landing',
       },
       domain: 'penncourses.org',
-      ingressPaths: ['/'],
+      paths: ['/'],
     });
 
     new ReactApplication(this, 'plan', {
@@ -54,7 +53,7 @@ export class CoursesChart extends Chart {
         image: 'pennlabs/pcp-frontend',
       },
       domain: 'penncourseplan.com',
-      ingressPaths: ['/'],
+      paths: ['/'],
     });
 
     new ReactApplication(this, 'alert', {
@@ -62,7 +61,7 @@ export class CoursesChart extends Chart {
         image: 'pennlabs/pca-frontend',
       },
       domain: 'penncoursealert.com',
-      ingressPaths: ['/'],
+      paths: ['/'],
     });
 
     new ReactApplication(this, 'review', {
@@ -70,7 +69,7 @@ export class CoursesChart extends Chart {
         image: 'pennlabs/pcr-frontend',
       },
       domain: 'penncoursereview.com',
-      ingressPaths: ['/'],
+      paths: ['/'],
     });
 
     new CronJob(this, 'load-courses', {

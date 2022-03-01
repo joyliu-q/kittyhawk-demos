@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk/';
+import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk/';
 
 const cronTime = require('cron-time-generator');
 
@@ -17,7 +17,6 @@ const djangoCommon = {
     },
     secret: secret,
     djangoSettingsModule: 'officehoursqueue.settings.production',
-    domains: [{ host: domain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
 };
 
   export class OHQChart extends Chart {
@@ -31,7 +30,7 @@ const djangoCommon = {
           cmd: ['/usr/local/bin/asgi-run'],
           replicas: 4,
         },
-        ingressPaths: ['/api/ws'],
+        domains: [{ host: domain, paths: ['/api/ws'] }],
       });
 
     new DjangoApplication(this, 'django-wsgi', {
@@ -40,7 +39,7 @@ const djangoCommon = {
         image: djangoCommon.deployment.image,
         replicas: 8,
       },
-      ingressPaths: ['/api', '/admin', '/assets'],
+      domains: [{ host: domain, paths: ['/api', '/admin', '/assets'] }],
     });
 
     new ReactApplication(this, 'react', {
@@ -49,7 +48,7 @@ const djangoCommon = {
         replicas: 2,
       },
       domain: domain,
-      ingressPaths: ['/'],
+      paths: ['/'],
       portEnv: '80',
     });
 

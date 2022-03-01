@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
+import { ReactApplication, DjangoApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
@@ -21,10 +21,10 @@ export class MobileChart extends Chart {
       },
       // TODO: are any of these subdomains?
       domains: [
-        { host: 'pennmobile.org' },
-        { host: 'studentlife.pennlabs.org', isSubdomain: true },
-        { host: 'portal.pennmobile.org', isSubdomain: true }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
-      ingressPaths: ['/','/api', '/assets'],
+        { host: 'studentlife.pennlabs.org', isSubdomain: true, paths: ['/']},
+        { host: 'portal.pennmobile.org', isSubdomain: true, paths: ['/api', '/assets'] },
+        { host: 'pennmobile.org', paths: ['/api', '/assets']},
+      ],
       djangoSettingsModule: 'pennmobile.settings.production',
     });
 
@@ -34,7 +34,7 @@ export class MobileChart extends Chart {
       },
       domain: "portal.pennmobile.org",
       isSubdomain: true,
-      ingressPaths: ['/'],
+      paths: ['/'],
     });
 
     new CronJob(this, 'get-laundry-snapshots', {
