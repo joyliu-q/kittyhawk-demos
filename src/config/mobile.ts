@@ -1,11 +1,11 @@
 import { Construct } from 'constructs';
-import { App, Chart, ChartProps } from 'cdk8s';
+import { Chart, ChartProps } from 'cdk8s';
 import { ReactApplication, DjangoApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
 // Mobile Demo
-export class MyChart extends Chart {
+export class MobileChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
@@ -17,14 +17,13 @@ export class MyChart extends Chart {
       deployment: {
         image: backendImage,
         secret,
-        replicas: 2,
+        replicas: 1,
       },
       // TODO: are any of these subdomains?
       domains: [
-        { host: 'studentlife.pennlabs.org' },
         { host: 'pennmobile.org' },
-        { host: 'portal.pennmobile.org' }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
-      // TODO: it seems to be configuring these paths for all of the domains, which is kinda sus
+        { host: 'studentlife.pennlabs.org', isSubdomain: true },
+        { host: 'portal.pennmobile.org', isSubdomain: true }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
       ingressPaths: ['/','/api', '/assets'],
       djangoSettingsModule: 'pennmobile.settings.production',
     });
@@ -34,24 +33,16 @@ export class MyChart extends Chart {
         image: frontendImage,
       },
       domain: "portal.pennmobile.org",
+      isSubdomain: true,
       ingressPaths: ['/'],
     });
 
     new CronJob(this, 'get-laundry-snapshots', {
-      schedule: cronTime.everyHourAt(15),
+      schedule: cronTime.every(15).minutes(),
       image: backendImage,
       secret,
       cmd: ["python", "manage.py", "get_snapshot"],
       env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production"}]
     });
   }
-}
-
-const app = new App();
-new MyChart(app, 'penn-mobile');
-app.synth();
-
-
-
-
-
+}2

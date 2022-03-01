@@ -1,11 +1,11 @@
 import { Construct } from 'constructs';
-import { App, Chart, ChartProps } from 'cdk8s';
+import { Chart, ChartProps } from 'cdk8s';
 import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
 // Courses Demo
-export class MyChart extends Chart {
+export class CoursesChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
@@ -89,6 +89,3 @@ export class MyChart extends Chart {
   }
 }
 
-const app = new App();
-new MyChart(app, 'penn-courses');
-app.synth();

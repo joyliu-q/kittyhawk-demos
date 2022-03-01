@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { App, Chart, ChartProps } from 'cdk8s';
+import { Chart, ChartProps } from 'cdk8s';
 import { ReactApplication, DjangoApplication, RedisApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk/';
 
 const cronTime = require('cron-time-generator');
@@ -20,7 +20,7 @@ const djangoCommon = {
     domains: [{ host: domain }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
 };
 
-  export class MyChart extends Chart {
+  export class OHQChart extends Chart {
     constructor(scope: Construct, id: string, props: ChartProps = { }) {
       super(scope, id, props);
 
@@ -85,7 +85,3 @@ const djangoCommon = {
     });
   }
 }
-
-const app = new App();
-new MyChart(app, 'ohq');
-app.synth();

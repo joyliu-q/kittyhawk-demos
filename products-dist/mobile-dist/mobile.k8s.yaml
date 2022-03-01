@@ -1,26 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: penn-mobile-django
+  name: mobile-django
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: penn-mobile-django
+    name: mobile-django
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    name: penn-mobile-django
-  name: penn-mobile-django
+    name: mobile-django
+  name: mobile-django
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: penn-mobile-django
+      name: mobile-django
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -29,7 +29,7 @@ spec:
   template:
     metadata:
       labels:
-        name: penn-mobile-django
+        name: mobile-django
     spec:
       containers:
         - env:
@@ -52,7 +52,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: penn-mobile-django
+  name: mobile-django
 spec:
   rules:
     - host: pennmobile.org
@@ -60,21 +60,21 @@ spec:
         paths:
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /assets
@@ -84,21 +84,21 @@ spec:
         paths:
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /assets
@@ -108,21 +108,21 @@ spec:
         paths:
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: penn-mobile-django
+                name: mobile-django
                 port:
                   number: 80
             path: /assets
@@ -169,26 +169,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: penn-mobile-react
+  name: mobile-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: penn-mobile-react
+    name: mobile-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    name: penn-mobile-react
-  name: penn-mobile-react
+    name: mobile-react
+  name: mobile-react
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: penn-mobile-react
+      name: mobile-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -197,7 +197,7 @@ spec:
   template:
     metadata:
       labels:
-        name: penn-mobile-react
+        name: mobile-react
     spec:
       containers:
         - env:
@@ -217,7 +217,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: penn-mobile-react
+  name: mobile-react
 spec:
   rules:
     - host: portal.pennmobile.org
@@ -225,7 +225,7 @@ spec:
         paths:
           - backend:
               service:
-                name: penn-mobile-react
+                name: mobile-react
                 port:
                   number: 80
             path: /
@@ -253,8 +253,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
-    name: penn-mobile-get-laundry-snapshots
-  name: penn-mobile-get-laundry-snapshots
+    name: mobile-get-laundry-snapshots
+  name: mobile-get-laundry-snapshots
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
