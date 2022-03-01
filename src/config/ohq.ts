@@ -47,8 +47,7 @@ const djangoCommon = {
         image: 'pennlabs/office-hours-queue-frontend',
         replicas: 2,
       },
-      domain: domain,
-      paths: ['/'],
+      domain: { host: domain, paths: ['/'] },
       portEnv: '80',
     });
 

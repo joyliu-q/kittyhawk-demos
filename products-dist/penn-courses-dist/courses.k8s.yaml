@@ -440,7 +440,7 @@ spec:
       containers:
         - env:
             - name: DOMAIN
-              value: penncourseplan.com
+              value: penncourseplan.org
             - name: PORT
               value: "80"
             - name: GIT_SHA
@@ -458,7 +458,7 @@ metadata:
   name: courses-plan
 spec:
   rules:
-    - host: penncourseplan.com
+    - host: penncourseplan.org
       http:
         paths:
           - backend:
@@ -470,22 +470,22 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - penncourseplan.com
-      secretName: penncourseplan-com-tls
+        - penncourseplan.org
+      secretName: penncourseplan-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: penncourseplan-com
+  name: penncourseplan-org
 spec:
   dnsNames:
-    - penncourseplan.com
-    - "*.penncourseplan.com"
+    - penncourseplan.org
+    - "*.penncourseplan.org"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: penncourseplan-com-tls
+  secretName: penncourseplan-org-tls
 ---
 apiVersion: v1
 kind: Service
@@ -523,7 +523,7 @@ spec:
       containers:
         - env:
             - name: DOMAIN
-              value: penncoursealert.com
+              value: penncoursealert.org
             - name: PORT
               value: "80"
             - name: GIT_SHA
@@ -541,7 +541,7 @@ metadata:
   name: courses-alert
 spec:
   rules:
-    - host: penncoursealert.com
+    - host: penncoursealert.org
       http:
         paths:
           - backend:
@@ -553,22 +553,22 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - penncoursealert.com
-      secretName: penncoursealert-com-tls
+        - penncoursealert.org
+      secretName: penncoursealert-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: penncoursealert-com
+  name: penncoursealert-org
 spec:
   dnsNames:
-    - penncoursealert.com
-    - "*.penncoursealert.com"
+    - penncoursealert.org
+    - "*.penncoursealert.org"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: penncoursealert-com-tls
+  secretName: penncoursealert-org-tls
 ---
 apiVersion: v1
 kind: Service
@@ -606,7 +606,7 @@ spec:
       containers:
         - env:
             - name: DOMAIN
-              value: penncoursereview.com
+              value: penncoursereview.org
             - name: PORT
               value: "80"
             - name: GIT_SHA
@@ -624,7 +624,7 @@ metadata:
   name: courses-review
 spec:
   rules:
-    - host: penncoursereview.com
+    - host: penncoursereview.org
       http:
         paths:
           - backend:
@@ -636,22 +636,22 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - penncoursereview.com
-      secretName: penncoursereview-com-tls
+        - penncoursereview.org
+      secretName: penncoursereview-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: penncoursereview-com
+  name: penncoursereview-org
 spec:
   dnsNames:
-    - penncoursereview.com
-    - "*.penncoursereview.com"
+    - penncoursereview.org
+    - "*.penncoursereview.org"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: penncoursereview-com-tls
+  secretName: penncoursereview-org-tls
 ---
 apiVersion: batch/v1
 kind: CronJob

@@ -64,8 +64,7 @@ export class ClubsChart extends Chart {
         image: 'pennlabs/penn-clubs-frontend',
         replicas: 2,
       },
-      domain: clubsDomain,
-      paths: ['/'],
+      domain: { host: clubsDomain, paths: ['/'] },
       portEnv: '80',
     });
 
@@ -101,8 +100,7 @@ export class ClubsChart extends Chart {
           { name: 'NEXT_PUBLIC_SITE_NAME', value: 'fyh' },
         ],
       },
-      domain: fyhDomain,
-      paths: ['/'],
+      domain: { host: fyhDomain, paths: ['/'] },
       portEnv: '80',
     });
 

@@ -44,32 +44,28 @@ export class CoursesChart extends Chart {
       deployment: {
         image: 'pennlabs/pcx-landing',
       },
-      domain: 'penncourses.org',
-      paths: ['/'],
+      domain: { host: 'penncourses.org', paths: ['/'] },
     });
 
     new ReactApplication(this, 'plan', {
       deployment: {
         image: 'pennlabs/pcp-frontend',
       },
-      domain: 'penncourseplan.com',
-      paths: ['/'],
+      domain: { host: 'penncourseplan.org', paths: ['/'] },
     });
 
     new ReactApplication(this, 'alert', {
       deployment: {
         image: 'pennlabs/pca-frontend',
       },
-      domain: 'penncoursealert.com',
-      paths: ['/'],
+      domain: { host: 'penncoursealert.org', paths: ['/'] },
     });
 
     new ReactApplication(this, 'review', {
       deployment: {
         image: 'pennlabs/pcr-frontend',
       },
-      domain: 'penncoursereview.com',
-      paths: ['/'],
+      domain: { host: 'penncoursereview.org', paths: ['/'] },
     });
 
     new CronJob(this, 'load-courses', {

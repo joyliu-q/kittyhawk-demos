@@ -32,9 +32,11 @@ export class MobileChart extends Chart {
       deployment: {
         image: frontendImage,
       },
-      domain: "portal.pennmobile.org",
-      isSubdomain: true,
-      paths: ['/'],
+      domain: { 
+        host: "portal.pennmobile.org", 
+        isSubdomain: true,
+        paths: ['/']
+      },
     });
 
     new CronJob(this, 'get-laundry-snapshots', {
