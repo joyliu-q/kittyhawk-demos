@@ -1,0 +1,821 @@
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-redis"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: "release-name-redis"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-django-asgi"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-django-asgi"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-django-wsgi"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-django-wsgi"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-react"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-react"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-hub-redis"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: "release-name-hub-redis"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-hub-django-asgi"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-hub-django-asgi"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-hub-django-wsgi"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-hub-django-wsgi"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name-hub-react"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "release-name-hub-react"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-redis"
+  namespace: default
+  labels:
+    name: "release-name-redis"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "release-name-redis"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-redis"
+    spec:
+      containers:
+        - name: "worker"
+          image: "redis:6.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-django-asgi"
+  namespace: default
+  labels:
+    name: "release-name-django-asgi"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: "release-name-django-asgi"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-django-asgi"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-backend:latest"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/usr/local/bin/asgi-run"
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: penn-clubs
+          env:
+            - name: "DOMAIN"
+              value: "pennclubs.com"
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "pennclubs.settings.production"
+            - name: "REDIS_HOST"
+              value: "penn-clubs-redis"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-django-wsgi"
+  namespace: default
+  labels:
+    name: "release-name-django-wsgi"
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      name: "release-name-django-wsgi"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-django-wsgi"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-backend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: penn-clubs
+          env:
+            - name: "DOMAIN"
+              value: "pennclubs.com"
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "pennclubs.settings.production"
+            - name: "REDIS_HOST"
+              value: "penn-clubs-redis"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-react"
+  namespace: default
+  labels:
+    name: "release-name-react"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: "release-name-react"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-react"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-frontend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: "PORT"
+              value: "80"
+            - name: "DOMAIN"
+              value: "pennclubs.com"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-hub-redis"
+  namespace: default
+  labels:
+    name: "release-name-hub-redis"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "release-name-hub-redis"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-hub-redis"
+    spec:
+      containers:
+        - name: "worker"
+          image: "redis:6.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-hub-django-asgi"
+  namespace: default
+  labels:
+    name: "release-name-hub-django-asgi"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: "release-name-hub-django-asgi"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-hub-django-asgi"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-backend:latest"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/usr/local/bin/asgi-run"
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: hub-at-penn
+          env:
+            - name: "DOMAIN"
+              value: "hub.provost.upenn.edu"
+            - name: "NEXT_PUBLIC_SITE_NAME"
+              value: "fyh"
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "pennclubs.settings.production"
+            - name: "REDIS_HOST"
+              value: "penn-clubs-hub-redis"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-hub-django-wsgi"
+  namespace: default
+  labels:
+    name: "release-name-hub-django-wsgi"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: "release-name-hub-django-wsgi"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-hub-django-wsgi"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-backend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: hub-at-penn
+          env:
+            - name: "DOMAIN"
+              value: "hub.provost.upenn.edu"
+            - name: "NEXT_PUBLIC_SITE_NAME"
+              value: "fyh"
+            - name: "DJANGO_SETTINGS_MODULE"
+              value: "pennclubs.settings.production"
+            - name: "REDIS_HOST"
+              value: "penn-clubs-hub-redis"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "release-name-hub-react"
+  namespace: default
+  labels:
+    name: "release-name-hub-react"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: "release-name-hub-react"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: "release-name-hub-react"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/penn-clubs-frontend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: "PORT"
+              value: "80"
+            - name: "DOMAIN"
+              value: "hub.provost.upenn.edu"
+            - name: "NEXT_PUBLIC_SITE_NAME"
+              value: "fyh"
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-rank-clubs"
+  namespace: default
+  labels:
+    name: "release-name-rank-clubs"
+spec:
+  schedule: "0 8 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "rank"
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-daily-notifications"
+  namespace: default
+  labels:
+    name: "release-name-daily-notifications"
+spec:
+  schedule: "0 13 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "daily_notifications"
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-hub-daily-notifications"
+  namespace: default
+  labels:
+    name: "release-name-hub-daily-notifications"
+spec:
+  schedule: "0 13 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "daily_notifications"
+              envFrom:
+                - secretRef:
+                    name: hub-at-penn
+              env:
+                - name: "DOMAIN"
+                  value: "pennclubs.com"
+                - name: "DJANGO_SETTINGS_MODULE"
+                  value: "pennclubs.settings.production"
+                - name: "REDIS_HOST"
+                  value: "penn-clubs-redis"
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-calendar-import"
+  namespace: default
+  labels:
+    name: "release-name-calendar-import"
+spec:
+  schedule: "0 12 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "import_calendar_events"
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-hub-calendar-import"
+  namespace: default
+  labels:
+    name: "release-name-hub-calendar-import"
+spec:
+  schedule: "0 12 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "import_calendar_events"
+              envFrom:
+                - secretRef:
+                    name: hub-at-penn
+              env:
+                - name: "DOMAIN"
+                  value: "pennclubs.com"
+                - name: "DJANGO_SETTINGS_MODULE"
+                  value: "pennclubs.settings.production"
+                - name: "REDIS_HOST"
+                  value: "penn-clubs-redis"
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "release-name-hub-paideia-calendar-import"
+  namespace: default
+  labels:
+    name: "release-name-hub-paideia-calendar-import"
+spec:
+  schedule: "0 12 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/penn-clubs-backend:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python"
+                - "manage.py"
+                - "import_paideia_events"
+              envFrom:
+                - secretRef:
+                    name: hub-at-penn
+              env:
+                - name: "DOMAIN"
+                  value: "pennclubs.com"
+                - name: "DJANGO_SETTINGS_MODULE"
+                  value: "pennclubs.settings.production"
+                - name: "REDIS_HOST"
+                  value: "penn-clubs-redis"
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-django-asgi
+  namespace: default
+spec:
+  rules:
+    - host: "pennclubs.com"
+      http:
+        paths:
+          - path: "/api/ws"
+            backend:
+              serviceName: release-name-django-asgi
+              servicePort: 80
+  tls:
+    - hosts:
+        - "pennclubs.com"
+      secretName: pennclubs-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-django-wsgi
+  namespace: default
+spec:
+  rules:
+    - host: "pennclubs.com"
+      http:
+        paths:
+          - path: "/api"
+            backend:
+              serviceName: release-name-django-wsgi
+              servicePort: 80
+  tls:
+    - hosts:
+        - "pennclubs.com"
+      secretName: pennclubs-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-react
+  namespace: default
+spec:
+  rules:
+    - host: "pennclubs.com"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: release-name-react
+              servicePort: 80
+  tls:
+    - hosts:
+        - "pennclubs.com"
+      secretName: pennclubs-com-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-hub-django-asgi
+  namespace: default
+spec:
+  rules:
+    - host: "hub.provost.upenn.edu"
+      http:
+        paths:
+          - path: "/api/ws"
+            backend:
+              serviceName: release-name-hub-django-asgi
+              servicePort: 80
+  tls:
+    - hosts:
+        - "hub.provost.upenn.edu"
+      secretName: upenn-edu-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-hub-django-wsgi
+  namespace: default
+spec:
+  rules:
+    - host: "hub.provost.upenn.edu"
+      http:
+        paths:
+          - path: "/api"
+            backend:
+              serviceName: release-name-hub-django-wsgi
+              servicePort: 80
+  tls:
+    - hosts:
+        - "hub.provost.upenn.edu"
+      secretName: upenn-edu-tls
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: release-name-hub-react
+  namespace: default
+spec:
+  rules:
+    - host: "hub.provost.upenn.edu"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: release-name-hub-react
+              servicePort: 80
+  tls:
+    - hosts:
+        - "hub.provost.upenn.edu"
+      secretName: upenn-edu-tls
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: pennclubs-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: pennclubs-com-tls
+  dnsNames:
+    - "pennclubs.com"
+    - "*.pennclubs.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: pennclubs-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: pennclubs-com-tls
+  dnsNames:
+    - "pennclubs.com"
+    - "*.pennclubs.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: pennclubs-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: pennclubs-com-tls
+  dnsNames:
+    - "pennclubs.com"
+    - "*.pennclubs.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: upenn-edu
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: upenn-edu-tls
+  dnsNames:
+    - "upenn.edu"
+    - "*.upenn.edu"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: upenn-edu
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: upenn-edu-tls
+  dnsNames:
+    - "upenn.edu"
+    - "*.upenn.edu"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: upenn-edu
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: upenn-edu-tls
+  dnsNames:
+    - "upenn.edu"
+    - "*.upenn.edu"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
