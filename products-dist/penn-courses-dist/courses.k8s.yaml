@@ -199,13 +199,6 @@ spec:
                   number: 80
             path: /assets
             pathType: Prefix
-          - backend:
-              service:
-                name: courses-backend
-                port:
-                  number: 80
-            path: /webhook
-            pathType: Prefix
     - host: penncoursealert.com
       http:
         paths:
@@ -274,13 +267,6 @@ spec:
                 port:
                   number: 80
             path: /assets
-            pathType: Prefix
-          - backend:
-              service:
-                name: courses-backend
-                port:
-                  number: 80
-            path: /webhook
             pathType: Prefix
   tls:
     - hosts:

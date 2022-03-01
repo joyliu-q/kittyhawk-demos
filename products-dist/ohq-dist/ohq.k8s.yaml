@@ -348,8 +348,6 @@ spec:
             - worker
             - -lINFO
           env:
-            - name: DOMAINS
-              value: ohq.io
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
@@ -360,34 +358,6 @@ spec:
           ports:
             - containerPort: 80
       volumes: []
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ohq-celery
-spec:
-  rules:
-    - host: ohq.io
-      http:
-        paths: []
-  tls:
-    - hosts:
-        - ohq.io
-      secretName: ohq-io-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: ohq-io
-spec:
-  dnsNames:
-    - ohq.io
-    - "*.ohq.io"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: ohq-io-tls
 ---
 apiVersion: batch/v1
 kind: CronJob

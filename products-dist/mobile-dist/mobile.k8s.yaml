@@ -34,7 +34,7 @@ spec:
       containers:
         - env:
             - name: DOMAINS
-              value: pennmobile.org,studentlife.pennlabs.org,portal.pennmobile.org
+              value: studentlife.pennlabs.org,portal.pennmobile.org,pennmobile.org
             - name: DJANGO_SETTINGS_MODULE
               value: pennmobile.settings.production
             - name: GIT_SHA
@@ -55,30 +55,6 @@ metadata:
   name: mobile-django
 spec:
   rules:
-    - host: pennmobile.org
-      http:
-        paths:
-          - backend:
-              service:
-                name: mobile-django
-                port:
-                  number: 80
-            path: /
-            pathType: Prefix
-          - backend:
-              service:
-                name: mobile-django
-                port:
-                  number: 80
-            path: /api
-            pathType: Prefix
-          - backend:
-              service:
-                name: mobile-django
-                port:
-                  number: 80
-            path: /assets
-            pathType: Prefix
     - host: studentlife.pennlabs.org
       http:
         paths:
@@ -89,6 +65,9 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
+    - host: portal.pennmobile.org
+      http:
+        paths:
           - backend:
               service:
                 name: mobile-django
@@ -103,16 +82,9 @@ spec:
                   number: 80
             path: /assets
             pathType: Prefix
-    - host: portal.pennmobile.org
+    - host: pennmobile.org
       http:
         paths:
-          - backend:
-              service:
-                name: mobile-django
-                port:
-                  number: 80
-            path: /
-            pathType: Prefix
           - backend:
               service:
                 name: mobile-django
@@ -129,28 +101,14 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - pennmobile.org
-      secretName: pennmobile-org-tls
-    - hosts:
         - studentlife.pennlabs.org
       secretName: pennlabs-org-tls
     - hosts:
         - portal.pennmobile.org
       secretName: pennmobile-org-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: pennmobile-org
-spec:
-  dnsNames:
-    - pennmobile.org
-    - "*.pennmobile.org"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: pennmobile-org-tls
+    - hosts:
+        - pennmobile.org
+      secretName: pennmobile-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -165,6 +123,20 @@ spec:
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
   secretName: pennlabs-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pennmobile-org
+spec:
+  dnsNames:
+    - pennmobile.org
+    - "*.pennmobile.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennmobile-org-tls
 ---
 apiVersion: v1
 kind: Service
