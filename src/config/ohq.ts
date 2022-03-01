@@ -4,24 +4,24 @@ import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '
 
 const cronTime = require('cron-time-generator');
 
-const backendImage = 'pennlabs/office-hours-queue-backend';
-const secret = 'office-hours-queue';
-const domain = 'ohq.io';
-
-const djangoCommon = {
-  deployment: {
-      image: backendImage,
-      env: [
-        { name: 'REDIS_URL', value: 'redis://office-hours-queue-redis:6379' },
-      ],
-    },
-    secret: secret,
-    djangoSettingsModule: 'officehoursqueue.settings.production',
-};
-
   export class OHQChart extends Chart {
     constructor(scope: Construct, id: string, props: ChartProps = { }) {
       super(scope, id, props);
+
+      const backendImage = 'pennlabs/office-hours-queue-backend';
+      const secret = 'office-hours-queue';
+      const domain = 'ohq.io';
+
+      const djangoCommon = {
+        deployment: {
+            image: backendImage,
+            env: [
+              { name: 'REDIS_URL', value: 'redis://office-hours-queue-redis:6379' },
+            ],
+          },
+          secret: secret,
+          djangoSettingsModule: 'officehoursqueue.settings.production',
+      };
 
       new DjangoApplication(this, 'django-asgi', {
         ...djangoCommon,
