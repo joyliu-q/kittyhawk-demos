@@ -1,5 +1,6 @@
 ---
 # Source: icarus/templates/services.yaml
+# DONE
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,6 +14,7 @@ spec:
     name: "release-name-django"
 ---
 # Source: icarus/templates/services.yaml
+# DONE
 apiVersion: v1
 kind: Service
 metadata:
@@ -26,6 +28,7 @@ spec:
     name: "release-name-react"
 ---
 # Source: icarus/templates/deployments.yaml
+# DONE
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -64,6 +67,7 @@ spec:
               value: "pennmobile.settings.production"
 ---
 # Source: icarus/templates/deployments.yaml
+# DONE
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -99,6 +103,7 @@ spec:
               value: "portal.pennmobile.org"
 ---
 # Source: icarus/templates/crontabs.yaml
+# DONE
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -131,6 +136,7 @@ spec:
                   value: "pennmobile.settings.production"
 ---
 # Source: icarus/templates/ingresses.yaml
+# DONE
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -179,6 +185,7 @@ spec:
       secretName: pennmobile-org-tls
 ---
 # Source: icarus/templates/ingresses.yaml
+# DONE
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -199,6 +206,7 @@ spec:
       secretName: pennmobile-org-tls
 ---
 # Source: icarus/templates/certificates.yaml
+# DONE
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
@@ -216,6 +224,7 @@ spec:
     group: cert-manager.io
 ---
 # Source: icarus/templates/certificates.yaml
+# DONE
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
@@ -233,6 +242,7 @@ spec:
     group: cert-manager.io
 ---
 # Source: icarus/templates/certificates.yaml
+# DONE
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
@@ -250,6 +260,7 @@ spec:
     group: cert-manager.io
 ---
 # Source: icarus/templates/certificates.yaml
+# DONE
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:

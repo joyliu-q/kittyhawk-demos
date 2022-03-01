@@ -17,7 +17,7 @@ metadata:
     name: penn-mobile-django
   name: penn-mobile-django
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       name: penn-mobile-django
@@ -33,8 +33,8 @@ spec:
     spec:
       containers:
         - env:
-            - name: DOMAIN
-              value: studentlife.pennlabs.org,pennmobile.org,portal.pennmobile.org
+            - name: DOMAINS
+              value: pennmobile.org,studentlife.pennlabs.org,portal.pennmobile.org
             - name: DJANGO_SETTINGS_MODULE
               value: pennmobile.settings.production
             - name: GIT_SHA
@@ -55,7 +55,7 @@ metadata:
   name: penn-mobile-django
 spec:
   rules:
-    - host: studentlife.pennlabs.org
+    - host: pennmobile.org
       http:
         paths:
           - backend:
@@ -79,7 +79,7 @@ spec:
                   number: 80
             path: /assets
             pathType: Prefix
-    - host: pennmobile.org
+    - host: studentlife.pennlabs.org
       http:
         paths:
           - backend:
@@ -129,36 +129,18 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - studentlife.pennlabs.org
-      secretName: studentlife-pennlabs-org-tls
-    - hosts:
         - pennmobile.org
       secretName: pennmobile-org-tls
     - hosts:
+        - studentlife.pennlabs.org
+      secretName: pennlabs-org-tls
+    - hosts:
         - portal.pennmobile.org
-      secretName: portal-pennmobile-org-tls
+      secretName: pennmobile-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  annotations:
-    helm.sh/resource-policy: keep
-  name: studentlife-pennlabs-org
-spec:
-  dnsNames:
-    - studentlife.pennlabs.org
-    - "*.studentlife.pennlabs.org"
-  issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: wildcard-letsencrypt-prod
-  secretName: studentlife-pennlabs-org-tls
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  annotations:
-    helm.sh/resource-policy: keep
   name: pennmobile-org
 spec:
   dnsNames:
@@ -173,18 +155,16 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  annotations:
-    helm.sh/resource-policy: keep
-  name: portal-pennmobile-org
+  name: pennlabs-org
 spec:
   dnsNames:
-    - portal.pennmobile.org
-    - "*.portal.pennmobile.org"
+    - pennlabs.org
+    - "*.pennlabs.org"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: portal-pennmobile-org-tls
+  secretName: pennlabs-org-tls
 ---
 apiVersion: v1
 kind: Service
@@ -253,23 +233,21 @@ spec:
   tls:
     - hosts:
         - portal.pennmobile.org
-      secretName: portal-pennmobile-org-tls
+      secretName: pennmobile-org-tls
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  annotations:
-    helm.sh/resource-policy: keep
-  name: portal-pennmobile-org
+  name: pennmobile-org
 spec:
   dnsNames:
-    - portal.pennmobile.org
-    - "*.portal.pennmobile.org"
+    - pennmobile.org
+    - "*.pennmobile.org"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
     name: wildcard-letsencrypt-prod
-  secretName: portal-pennmobile-org-tls
+  secretName: pennmobile-org-tls
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -300,5 +278,5 @@ spec:
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
-  schedule: 0 15 * * *
+  schedule: "*/15 * * * *"
   successfulJobsHistoryLimit: 1

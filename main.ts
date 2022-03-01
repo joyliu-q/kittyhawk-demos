@@ -17,12 +17,12 @@ export class MyChart extends Chart {
       deployment: {
         image: backendImage,
         secret,
-        replicas: 2,
+        replicas: 1,
       },
       // TODO: are any of these subdomains?
       domains: [
-        { host: 'studentlife.pennlabs.org', isSubdomain: true },
         { host: 'pennmobile.org' },
+        { host: 'studentlife.pennlabs.org', isSubdomain: true },
         { host: 'portal.pennmobile.org', isSubdomain: true }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
       ingressPaths: ['/','/api', '/assets'],
       djangoSettingsModule: 'pennmobile.settings.production',
@@ -33,6 +33,7 @@ export class MyChart extends Chart {
         image: frontendImage,
       },
       domain: "portal.pennmobile.org",
+      isSubdomain: true,
       ingressPaths: ['/'],
     });
 
