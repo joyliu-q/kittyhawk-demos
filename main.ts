@@ -1,94 +1,56 @@
 import { Construct } from 'constructs';
 import { App, Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
+import { ReactApplication, DjangoApplication, CronJob, NonEmptyArray } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
-// Courses Demo
+// Mobile Demo
 export class MyChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
-    const backendImage = 'pennlabs/penn-courses-backend';
-    const secret = 'penn-courses';
+    const secret = "penn-mobile";
+    const backendImage = "pennlabs/penn-mobile-backend"
+    const frontendImage = "pennlabs/penn-mobile-frontend"
 
-    new RedisApplication(this, 'redis', { deployment: { tag: '4.0' } });
-
-    new DjangoApplication(this, 'celery', {
+    new DjangoApplication(this, 'django', {
       deployment: {
         image: backendImage,
-        secret: secret,
-        cmd: ['celery', 'worker', '-A', 'PennCourses', '-Q', 'alerts,celery', '-linfo'],
+        secret,
+        replicas: 2,
       },
-      djangoSettingsModule: 'PennCourses.settings.production',
+      // TODO: are any of these subdomains?
+      domains: [
+        { host: 'studentlife.pennlabs.org', isSubdomain: true },
+        { host: 'pennmobile.org' },
+        { host: 'portal.pennmobile.org', isSubdomain: true }] as NonEmptyArray<{ host: string; isSubdomain?: boolean }>,
+      ingressPaths: ['/','/api', '/assets'],
+      djangoSettingsModule: 'pennmobile.settings.production',
     });
 
-    new DjangoApplication(this, 'backend', {
+    new ReactApplication(this, 'react', {
       deployment: {
-        image: backendImage,
-        secret: secret,
-        cmd: ['celery', 'worker', '-A', 'PennCourses', '-Q', 'alerts,celery', '-linfo'],
-        replicas: 3,
-        env: [{ name: 'PORT', value: '80' }],
+        image: frontendImage,
       },
-      djangoSettingsModule: 'PennCourses.settings.production',
-      ingressPaths: ['/api', '/admin', '/accounts', '/assets', '/webhook'],
-      ingressProps: {
-        annotations: { ['ingress.kubernetes.io/content-security-policy']: "frame-ancestors 'none';" },
-      },
-      domains: [{ host: 'penncourseplan.com' },
-        { host: 'penncoursealert.com' },
-        { host: 'penncoursereview.com' }],
-    });
-
-    new ReactApplication(this, 'landing', {
-      deployment: {
-        image: 'pennlabs/pcx-landing',
-      },
-      domain: 'penncourses.org',
+      domain: "portal.pennmobile.org",
       ingressPaths: ['/'],
     });
 
-    new ReactApplication(this, 'plan', {
-      deployment: {
-        image: 'pennlabs/pcp-frontend',
-      },
-      domain: 'penncourseplan.com',
-      ingressPaths: ['/'],
-    });
-
-    new ReactApplication(this, 'alert', {
-      deployment: {
-        image: 'pennlabs/pca-frontend',
-      },
-      domain: 'penncoursealert.com',
-      ingressPaths: ['/'],
-    });
-
-    new ReactApplication(this, 'review', {
-      deployment: {
-        image: 'pennlabs/pcr-frontend',
-      },
-      domain: 'penncoursereview.com',
-      ingressPaths: ['/'],
-    });
-
-    new CronJob(this, 'load-courses', {
-      schedule: cronTime.everyDayAt(3),
+    new CronJob(this, 'get-laundry-snapshots', {
+      schedule: cronTime.every(15).minutes(),
       image: backendImage,
-      secret: secret,
-      cmd: ['python', 'manage.py', 'registrarimport'],
-    });
-
-    new CronJob(this, 'report-stats', {
-      schedule: cronTime.everyDayAt(20),
-      image: backendImage,
-      secret: secret,
-      cmd: ['python', 'manage.py', 'alertstats', '1', '--slack'],
+      secret,
+      cmd: ["python", "manage.py", "get_snapshot"],
+      env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production"}]
     });
   }
-}
+}2
 
 const app = new App();
-new MyChart(app, 'penn-courses');
+new MyChart(app, 'penn-mobile');
 app.synth();
+
+
+
+
+

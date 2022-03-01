@@ -32,9 +32,7 @@ spec:
         name: penn-mobile-django
     spec:
       containers:
-        - command:
-            - /usr/local/bin/asgi-run
-          env:
+        - env:
             - name: DOMAIN
               value: studentlife.pennlabs.org,pennmobile.org,portal.pennmobile.org
             - name: DJANGO_SETTINGS_MODULE
@@ -302,5 +300,5 @@ spec:
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
-  schedule: 15 * * * *
+  schedule: 0 15 * * *
   successfulJobsHistoryLimit: 1
