@@ -6,7 +6,7 @@ const cronTime = require('cron-time-generator');
 
 // Mobile Demo
 export class MobileChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = { }) {
+  constructor(scope: Construct, id: string, props: ChartProps = {}) {
     super(scope, id, props);
 
     const secret = "penn-mobile";
@@ -19,11 +19,10 @@ export class MobileChart extends Chart {
         secret,
         replicas: 1,
       },
-      // TODO: are any of these subdomains?
       domains: [
-        { host: 'studentlife.pennlabs.org', isSubdomain: true, paths: ['/']},
+        { host: 'studentlife.pennlabs.org', isSubdomain: true, paths: ['/'] },
         { host: 'portal.pennmobile.org', isSubdomain: true, paths: ['/api', '/assets'] },
-        { host: 'pennmobile.org', paths: ['/api', '/assets']},
+        { host: 'pennmobile.org', paths: ['/api', '/assets'] },
       ],
       djangoSettingsModule: 'pennmobile.settings.production',
     });
@@ -32,8 +31,8 @@ export class MobileChart extends Chart {
       deployment: {
         image: frontendImage,
       },
-      domain: { 
-        host: "portal.pennmobile.org", 
+      domain: {
+        host: "portal.pennmobile.org",
         isSubdomain: true,
         paths: ['/']
       },
@@ -44,7 +43,7 @@ export class MobileChart extends Chart {
       image: backendImage,
       secret,
       cmd: ["python", "manage.py", "get_snapshot"],
-      env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production"}]
+      env: [{ name: "DJANGO_SETTINGS_MODULE", value: "pennmobile.settings.production" }]
     });
   }
-}2
+} 2
