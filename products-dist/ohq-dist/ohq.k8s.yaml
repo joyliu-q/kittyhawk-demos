@@ -35,12 +35,17 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
+            - name: REDIS_URL
+              value: redis://office-hours-queue-redis:6379
             - name: DOMAINS
               value: ohq.io
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: office-hours-queue
           image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
@@ -118,12 +123,17 @@ spec:
     spec:
       containers:
         - env:
+            - name: REDIS_URL
+              value: redis://office-hours-queue-redis:6379
             - name: DOMAINS
               value: ohq.io
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: office-hours-queue
           image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
@@ -348,10 +358,15 @@ spec:
             - worker
             - -lINFO
           env:
+            - name: REDIS_URL
+              value: redis://office-hours-queue-redis:6379
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: office-hours-queue
           image: pennlabs/office-hours-queue-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
