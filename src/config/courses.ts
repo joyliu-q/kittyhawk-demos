@@ -6,7 +6,7 @@ const cronTime = require('cron-time-generator');
 
 // Courses Demo
 export class CoursesChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = { }) {
+  constructor(scope: Construct, id: string, props: ChartProps = {}) {
     super(scope, id, props);
 
     const backendImage = 'pennlabs/penn-courses-backend';
@@ -36,8 +36,8 @@ export class CoursesChart extends Chart {
         annotations: { ['ingress.kubernetes.io/content-security-policy']: "frame-ancestors 'none';" },
       },
       domains: [{ host: 'penncourseplan.com', paths: ["/api", "/admin", "/accounts", "/assets"] },
-        { host: 'penncoursealert.com', paths: ["/api", "/admin", "/accounts", "/assets", "/webhook"] },
-        { host: 'penncoursereview.com', paths: ["/api", "/admin", "/accounts", "/assets"]}],
+      { host: 'penncoursealert.com', paths: ["/api", "/admin", "/accounts", "/assets", "/webhook"] },
+      { host: 'penncoursereview.com', paths: ["/api", "/admin", "/accounts", "/assets"] }],
     });
 
     new ReactApplication(this, 'landing', {
