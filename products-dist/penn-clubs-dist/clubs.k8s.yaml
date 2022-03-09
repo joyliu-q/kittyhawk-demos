@@ -79,12 +79,17 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
+            - name: REDIS_HOST
+              value: penn-clubs-redis
             - name: DOMAINS
               value: pennclubs.com
             - name: DJANGO_SETTINGS_MODULE
               value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: penn-clubs
           image: pennlabs/penn-clubs-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
@@ -162,12 +167,17 @@ spec:
     spec:
       containers:
         - env:
+            - name: REDIS_HOST
+              value: penn-clubs-redis
             - name: DOMAINS
               value: pennclubs.com
             - name: DJANGO_SETTINGS_MODULE
               value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: penn-clubs
           image: pennlabs/penn-clubs-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
@@ -374,12 +384,19 @@ spec:
         - command:
             - /usr/local/bin/asgi-run
           env:
+            - name: REDIS_HOST
+              value: penn-clubs-hub-redis
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
             - name: DOMAINS
               value: hub.provost.upenn.edu
             - name: DJANGO_SETTINGS_MODULE
               value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: first-year-hub
           image: pennlabs/penn-clubs-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
@@ -457,12 +474,19 @@ spec:
     spec:
       containers:
         - env:
+            - name: REDIS_HOST
+              value: penn-clubs-hub-redis
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
             - name: DOMAINS
               value: hub.provost.upenn.edu
             - name: DJANGO_SETTINGS_MODULE
               value: pennclubs.settings.production
             - name: GIT_SHA
               value: TESTSHA
+          envFrom:
+            - secretRef:
+                name: first-year-hub
           image: pennlabs/penn-clubs-backend:TESTSHA
           imagePullPolicy: IfNotPresent
           name: worker
