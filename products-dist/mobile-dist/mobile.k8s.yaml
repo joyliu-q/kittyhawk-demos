@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: mobile-django
 spec:
   ports:
@@ -15,6 +17,7 @@ kind: Deployment
 metadata:
   labels:
     name: mobile-django
+    version: TESTSHA
   name: mobile-django
 spec:
   replicas: 1
@@ -52,6 +55,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: mobile-django
 spec:
   rules:
@@ -113,6 +118,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennlabs-org
 spec:
   dnsNames:
@@ -127,6 +134,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennmobile-org
 spec:
   dnsNames:
@@ -141,6 +150,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: mobile-react
 spec:
   ports:
@@ -155,6 +166,7 @@ kind: Deployment
 metadata:
   labels:
     name: mobile-react
+    version: TESTSHA
   name: mobile-react
 spec:
   replicas: 1
@@ -189,6 +201,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: mobile-react
 spec:
   rules:
@@ -210,6 +224,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennmobile-org
 spec:
   dnsNames:
@@ -226,6 +242,7 @@ kind: CronJob
 metadata:
   labels:
     name: mobile-get-laundry-snapshots
+    version: TESTSHA
   name: mobile-get-laundry-snapshots
 spec:
   failedJobsHistoryLimit: 1

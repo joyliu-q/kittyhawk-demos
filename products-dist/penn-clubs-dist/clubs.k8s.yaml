@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-redis
 spec:
   ports:
@@ -15,6 +17,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-redis
+    version: TESTSHA
   name: clubs-redis
 spec:
   replicas: 1
@@ -45,6 +48,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-django-asgi
 spec:
   ports:
@@ -59,6 +64,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-django-asgi
+    version: TESTSHA
   name: clubs-django-asgi
 spec:
   replicas: 2
@@ -100,6 +106,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-django-asgi
 spec:
   rules:
@@ -121,6 +129,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennclubs-com
 spec:
   dnsNames:
@@ -135,6 +145,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-django-wsgi
 spec:
   ports:
@@ -149,6 +161,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-django-wsgi
+    version: TESTSHA
   name: clubs-django-wsgi
 spec:
   replicas: 5
@@ -188,6 +201,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-django-wsgi
 spec:
   rules:
@@ -209,6 +224,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennclubs-com
 spec:
   dnsNames:
@@ -223,6 +240,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-react
 spec:
   ports:
@@ -237,6 +256,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-react
+    version: TESTSHA
   name: clubs-react
 spec:
   replicas: 2
@@ -271,6 +291,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-react
 spec:
   rules:
@@ -292,6 +314,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: pennclubs-com
 spec:
   dnsNames:
@@ -306,6 +330,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-redis
 spec:
   ports:
@@ -320,6 +346,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-hub-redis
+    version: TESTSHA
   name: clubs-hub-redis
 spec:
   replicas: 1
@@ -350,6 +377,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-django-asgi
 spec:
   ports:
@@ -364,6 +393,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-hub-django-asgi
+    version: TESTSHA
   name: clubs-hub-django-asgi
 spec:
   replicas: 2
@@ -407,6 +437,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-django-asgi
 spec:
   rules:
@@ -428,6 +460,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -442,6 +476,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-django-wsgi
 spec:
   ports:
@@ -456,6 +492,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-hub-django-wsgi
+    version: TESTSHA
   name: clubs-hub-django-wsgi
 spec:
   replicas: 3
@@ -497,6 +534,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-django-wsgi
 spec:
   rules:
@@ -518,6 +557,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -532,6 +573,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-react
 spec:
   ports:
@@ -546,6 +589,7 @@ kind: Deployment
 metadata:
   labels:
     name: clubs-hub-react
+    version: TESTSHA
   name: clubs-hub-react
 spec:
   replicas: 2
@@ -582,6 +626,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  labels:
+    version: TESTSHA
   name: clubs-hub-react
 spec:
   rules:
@@ -603,6 +649,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  labels:
+    version: TESTSHA
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -619,6 +667,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-rank-clubs
+    version: TESTSHA
   name: clubs-rank-clubs
 spec:
   failedJobsHistoryLimit: 1
@@ -649,6 +698,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-daily-notifications
+    version: TESTSHA
   name: clubs-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -679,6 +729,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-hub-daily-notifications
+    version: TESTSHA
   name: clubs-hub-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -709,6 +760,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-calendar-import
+    version: TESTSHA
   name: clubs-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -739,6 +791,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-hub-calendar-import
+    version: TESTSHA
   name: clubs-hub-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -769,6 +822,7 @@ kind: CronJob
 metadata:
   labels:
     name: clubs-hub-paideia-calendar-import
+    version: TESTSHA
   name: clubs-hub-paideia-calendar-import
 spec:
   failedJobsHistoryLimit: 1
