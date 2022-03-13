@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-django-asgi
 spec:
   ports:
@@ -16,8 +17,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-django-asgi
-    version: TESTSHA
+    release: ohq
   name: ohq-django-asgi
 spec:
   replicas: 4
@@ -60,7 +62,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-django-asgi
 spec:
   rules:
@@ -82,8 +85,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: ohq-io
 spec:
   dnsNames:
@@ -99,7 +101,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-django-wsgi
 spec:
   ports:
@@ -113,8 +116,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-django-wsgi
-    version: TESTSHA
+    release: ohq
   name: ohq-django-wsgi
 spec:
   replicas: 8
@@ -155,7 +159,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-django-wsgi
 spec:
   rules:
@@ -191,8 +196,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: ohq-io
 spec:
   dnsNames:
@@ -208,7 +212,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-react
 spec:
   ports:
@@ -222,8 +227,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-react
-    version: TESTSHA
+    release: ohq
   name: ohq-react
 spec:
   replicas: 2
@@ -259,7 +265,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-react
 spec:
   rules:
@@ -281,8 +288,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: ohq-io
 spec:
   dnsNames:
@@ -298,7 +304,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-redis
 spec:
   ports:
@@ -312,8 +319,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-redis
-    version: TESTSHA
+    release: ohq
   name: ohq-redis
 spec:
   replicas: 1
@@ -345,7 +353,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: ohq
   name: ohq-celery
 spec:
   ports:
@@ -359,8 +368,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-celery
-    version: TESTSHA
+    release: ohq
   name: ohq-celery
 spec:
   replicas: 1
@@ -405,8 +415,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-calculate-waits
-    version: TESTSHA
+    release: ohq
   name: ohq-calculate-waits
 spec:
   failedJobsHistoryLimit: 1
@@ -436,8 +447,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-queue-daily-stat
-    version: TESTSHA
+    release: ohq
   name: ohq-queue-daily-stat
 spec:
   failedJobsHistoryLimit: 1
@@ -467,8 +479,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: ohq-queue-heatmap-stat
-    version: TESTSHA
+    release: ohq
   name: ohq-queue-heatmap-stat
 spec:
   failedJobsHistoryLimit: 1

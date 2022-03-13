@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: mobile
   name: mobile-django
 spec:
   ports:
@@ -16,8 +17,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: mobile-django
-    version: TESTSHA
+    release: mobile
   name: mobile-django
 spec:
   replicas: 1
@@ -56,7 +58,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: mobile
   name: mobile-django
 spec:
   rules:
@@ -118,8 +121,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: pennlabs-org
 spec:
   dnsNames:
@@ -134,8 +136,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: pennmobile-org
 spec:
   dnsNames:
@@ -151,7 +152,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: mobile
   name: mobile-react
 spec:
   ports:
@@ -165,8 +167,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: mobile-react
-    version: TESTSHA
+    release: mobile
   name: mobile-react
 spec:
   replicas: 1
@@ -202,7 +205,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: mobile
   name: mobile-react
 spec:
   rules:
@@ -224,8 +228,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: pennmobile-org
 spec:
   dnsNames:
@@ -241,8 +244,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: mobile-get-laundry-snapshots
-    version: TESTSHA
+    release: mobile
   name: mobile-get-laundry-snapshots
 spec:
   failedJobsHistoryLimit: 1

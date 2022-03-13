@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-redis
 spec:
   ports:
@@ -16,8 +17,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-redis
-    version: TESTSHA
+    release: courses
   name: courses-redis
 spec:
   replicas: 1
@@ -49,7 +51,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-celery
 spec:
   ports:
@@ -63,8 +66,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-celery
-    version: TESTSHA
+    release: courses
   name: courses-celery
 spec:
   replicas: 1
@@ -109,7 +113,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-backend
 spec:
   ports:
@@ -123,8 +128,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-backend
-    version: TESTSHA
+    release: courses
   name: courses-backend
 spec:
   replicas: 3
@@ -175,7 +181,8 @@ metadata:
   annotations:
     ingress.kubernetes.io/content-security-policy: frame-ancestors 'none';
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-backend
 spec:
   rules:
@@ -293,8 +300,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncourseplan-com
 spec:
   dnsNames:
@@ -309,8 +315,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncoursealert-com
 spec:
   dnsNames:
@@ -325,8 +330,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncoursereview-com
 spec:
   dnsNames:
@@ -342,7 +346,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-landing
 spec:
   ports:
@@ -356,8 +361,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-landing
-    version: TESTSHA
+    release: courses
   name: courses-landing
 spec:
   replicas: 1
@@ -393,7 +399,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-landing
 spec:
   rules:
@@ -415,8 +422,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncourses-org
 spec:
   dnsNames:
@@ -432,7 +438,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-plan
 spec:
   ports:
@@ -446,8 +453,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-plan
-    version: TESTSHA
+    release: courses
   name: courses-plan
 spec:
   replicas: 1
@@ -483,7 +491,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-plan
 spec:
   rules:
@@ -505,8 +514,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncourseplan-org
 spec:
   dnsNames:
@@ -522,7 +530,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-alert
 spec:
   ports:
@@ -536,8 +545,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-alert
-    version: TESTSHA
+    release: courses
   name: courses-alert
 spec:
   replicas: 1
@@ -573,7 +583,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-alert
 spec:
   rules:
@@ -595,8 +606,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncoursealert-org
 spec:
   dnsNames:
@@ -612,7 +622,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-review
 spec:
   ports:
@@ -626,8 +637,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-review
-    version: TESTSHA
+    release: courses
   name: courses-review
 spec:
   replicas: 1
@@ -663,7 +675,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
-    version: TESTSHA
+    app.kubernetes.io/version: TESTSHA
+    release: courses
   name: courses-review
 spec:
   rules:
@@ -685,8 +698,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels:
-    version: TESTSHA
+  labels: {}
   name: penncoursereview-org
 spec:
   dnsNames:
@@ -702,8 +714,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-load-courses
-    version: TESTSHA
+    release: courses
   name: courses-load-courses
 spec:
   failedJobsHistoryLimit: 1
@@ -733,8 +746,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/version: TESTSHA
     name: courses-report-stats
-    version: TESTSHA
+    release: courses
   name: courses-report-stats
 spec:
   failedJobsHistoryLimit: 1

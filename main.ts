@@ -10,16 +10,16 @@ if (!gitSha) {
 
 switch (process.env.RELEASE_NAME) {
   case 'clubs':
-    new ClubsChart(app, 'clubs', { labels: { version: gitSha } });
+    new ClubsChart(app, 'clubs');
     break;
   case 'courses':
-    new CoursesChart(app, 'courses', { labels: { version: gitSha } });
+    new CoursesChart(app, 'courses');
     break;
   case 'mobile':
-    new MobileChart(app, 'mobile', { labels: { version: gitSha } });
+    new MobileChart(app, 'mobile');
     break;
   case 'ohq':
-    new OHQChart(app, 'ohq', { labels: { version: gitSha } });
+    new OHQChart(app, 'ohq');
     break;
   default:
       throw new Error(`Unknown chart name: ${process.env.RELEASE_NAME}`);
