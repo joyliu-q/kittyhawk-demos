@@ -1,13 +1,12 @@
 import { Construct } from 'constructs';
-import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
+import { PennLabsChart, ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
 // Courses Demo
-export class CoursesChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = {}) {
-    super(scope, id, props);
+export class CoursesChart extends PennLabsChart {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
     const backendImage = 'pennlabs/penn-courses-backend';
     const secret = 'penn-courses';

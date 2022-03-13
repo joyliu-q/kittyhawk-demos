@@ -1,12 +1,11 @@
 import { Construct } from 'constructs';
-import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk/';
+import { PennLabsChart, ReactApplication, DjangoApplication, RedisApplication, CronJob } from '@pennlabs/kittyhawk/';
 
 const cronTime = require('cron-time-generator');
 
-export class OHQChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = {}) {
-    super(scope, id, props);
+export class OHQChart extends PennLabsChart {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
     const frontendImage = 'pennlabs/office-hours-queue-frontend';
     const backendImage = 'pennlabs/office-hours-queue-backend';

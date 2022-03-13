@@ -1,13 +1,12 @@
 import { Construct } from 'constructs';
-import { Chart, ChartProps } from 'cdk8s';
-import { ReactApplication, DjangoApplication, CronJob } from '@pennlabs/kittyhawk';
+import { PennLabsChart, ReactApplication, DjangoApplication, CronJob } from '@pennlabs/kittyhawk';
 
 const cronTime = require('cron-time-generator');
 
 // Mobile Demo
-export class MobileChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = {}) {
-    super(scope, id, props);
+export class MobileChart extends PennLabsChart {
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
     const secret = "penn-mobile";
     const backendImage = "pennlabs/penn-mobile-backend"
