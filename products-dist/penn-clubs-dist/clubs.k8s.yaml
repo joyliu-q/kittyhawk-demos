@@ -2,8 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-redis
 spec:
   ports:
@@ -17,9 +18,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-redis
-    release: clubs
   name: clubs-redis
 spec:
   replicas: 1
@@ -51,8 +53,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-django-asgi
 spec:
   ports:
@@ -66,9 +69,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-django-asgi
-    release: clubs
   name: clubs-django-asgi
 spec:
   replicas: 2
@@ -111,8 +115,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-django-asgi
 spec:
   rules:
@@ -134,7 +139,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: pennclubs-com
 spec:
   dnsNames:
@@ -150,8 +156,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-django-wsgi
 spec:
   ports:
@@ -165,9 +172,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-django-wsgi
-    release: clubs
   name: clubs-django-wsgi
 spec:
   replicas: 5
@@ -208,8 +216,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-django-wsgi
 spec:
   rules:
@@ -231,7 +240,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: pennclubs-com
 spec:
   dnsNames:
@@ -247,8 +257,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-react
 spec:
   ports:
@@ -262,9 +273,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-react
-    release: clubs
   name: clubs-react
 spec:
   replicas: 2
@@ -300,8 +312,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-react
 spec:
   rules:
@@ -323,7 +336,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: pennclubs-com
 spec:
   dnsNames:
@@ -339,8 +353,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-redis
 spec:
   ports:
@@ -354,9 +369,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-redis
-    release: clubs
   name: clubs-hub-redis
 spec:
   replicas: 1
@@ -388,8 +404,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-django-asgi
 spec:
   ports:
@@ -403,9 +420,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-django-asgi
-    release: clubs
   name: clubs-hub-django-asgi
 spec:
   replicas: 2
@@ -450,8 +468,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-django-asgi
 spec:
   rules:
@@ -473,7 +492,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -489,8 +509,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-django-wsgi
 spec:
   ports:
@@ -504,9 +525,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-django-wsgi
-    release: clubs
   name: clubs-hub-django-wsgi
 spec:
   replicas: 3
@@ -549,8 +571,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-django-wsgi
 spec:
   rules:
@@ -572,7 +595,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -588,8 +612,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-react
 spec:
   ports:
@@ -603,9 +628,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-react
-    release: clubs
   name: clubs-hub-react
 spec:
   replicas: 2
@@ -643,8 +669,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    release: clubs
   name: clubs-hub-react
 spec:
   rules:
@@ -666,7 +693,8 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  labels: {}
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -682,9 +710,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-rank-clubs
-    release: clubs
   name: clubs-rank-clubs
 spec:
   failedJobsHistoryLimit: 1
@@ -714,9 +743,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-daily-notifications
-    release: clubs
   name: clubs-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -746,9 +776,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-daily-notifications
-    release: clubs
   name: clubs-hub-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -778,9 +809,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-calendar-import
-    release: clubs
   name: clubs-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -810,9 +842,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-calendar-import
-    release: clubs
   name: clubs-hub-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -842,9 +875,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
     name: clubs-hub-paideia-calendar-import
-    release: clubs
   name: clubs-hub-paideia-calendar-import
 spec:
   failedJobsHistoryLimit: 1
