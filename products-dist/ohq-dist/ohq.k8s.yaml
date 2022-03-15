@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: ohq-django-asgi
+  name: ohq-django-asgi
 spec:
   replicas: 4
   selector:
     matchLabels:
-      name: Default
+      name: ohq-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: ohq-django-asgi
     spec:
       containers:
         - command:
@@ -124,13 +124,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: ohq-django-wsgi
+  name: ohq-django-wsgi
 spec:
   replicas: 8
   selector:
     matchLabels:
-      name: Default
+      name: ohq-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -139,7 +139,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: ohq-django-wsgi
     spec:
       containers:
         - env:
@@ -239,13 +239,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: ohq-react
+  name: ohq-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: Default
+      name: ohq-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -254,7 +254,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: ohq-react
     spec:
       containers:
         - env:
@@ -335,13 +335,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: ohq-redis
+  name: ohq-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: ohq-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -350,7 +350,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: ohq-redis
     spec:
       containers:
         - env:
@@ -386,13 +386,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: ohq-celery
+  name: ohq-celery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: ohq-celery
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -401,7 +401,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: ohq-celery
     spec:
       containers:
         - command:

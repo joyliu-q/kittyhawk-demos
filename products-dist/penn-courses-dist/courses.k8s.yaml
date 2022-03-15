@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-redis
+  name: courses-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-redis
     spec:
       containers:
         - env:
@@ -72,13 +72,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-celery
+  name: courses-celery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-celery
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -87,7 +87,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-celery
     spec:
       containers:
         - command:
@@ -136,13 +136,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-backend
+  name: courses-backend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: Default
+      name: courses-backend
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -151,7 +151,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-backend
     spec:
       containers:
         - command:
@@ -375,13 +375,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-landing
+  name: courses-landing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-landing
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -390,7 +390,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-landing
     spec:
       containers:
         - env:
@@ -471,13 +471,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-plan
+  name: courses-plan
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-plan
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -486,7 +486,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-plan
     spec:
       containers:
         - env:
@@ -567,13 +567,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-alert
+  name: courses-alert
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-alert
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -582,7 +582,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-alert
     spec:
       containers:
         - env:
@@ -663,13 +663,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: courses-review
+  name: courses-review
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: courses-review
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -678,7 +678,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: courses-review
     spec:
       containers:
         - env:

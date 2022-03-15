@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-redis
+  name: clubs-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: clubs-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-redis
     spec:
       containers:
         - env:
@@ -72,13 +72,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-django-asgi
+  name: clubs-django-asgi
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: Default
+      name: clubs-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -87,7 +87,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-django-asgi
     spec:
       containers:
         - command:
@@ -175,13 +175,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-django-wsgi
+  name: clubs-django-wsgi
 spec:
   replicas: 5
   selector:
     matchLabels:
-      name: Default
+      name: clubs-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -190,7 +190,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-django-wsgi
     spec:
       containers:
         - env:
@@ -276,13 +276,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-react
+  name: clubs-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: Default
+      name: clubs-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -291,7 +291,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-react
     spec:
       containers:
         - env:
@@ -372,13 +372,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-hub-redis
+  name: clubs-hub-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: clubs-hub-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -387,7 +387,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-hub-redis
     spec:
       containers:
         - env:
@@ -423,13 +423,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-hub-django-asgi
+  name: clubs-hub-django-asgi
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: Default
+      name: clubs-hub-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -438,7 +438,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-hub-django-asgi
     spec:
       containers:
         - command:
@@ -528,13 +528,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-hub-django-wsgi
+  name: clubs-hub-django-wsgi
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: Default
+      name: clubs-hub-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -543,7 +543,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-hub-django-wsgi
     spec:
       containers:
         - env:
@@ -631,13 +631,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: clubs-hub-react
+  name: clubs-hub-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: Default
+      name: clubs-hub-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -646,7 +646,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: clubs-hub-react
     spec:
       containers:
         - env:

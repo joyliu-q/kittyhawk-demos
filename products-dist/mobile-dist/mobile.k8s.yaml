@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: mobile-django
+  name: mobile-django
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: mobile-django
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: mobile-django
     spec:
       containers:
         - env:
@@ -176,13 +176,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-    name: Default
-  name: Default
+    name: mobile-react
+  name: mobile-react
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: Default
+      name: mobile-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -191,7 +191,7 @@ spec:
   template:
     metadata:
       labels:
-        name: Default
+        name: mobile-react
     spec:
       containers:
         - env:
