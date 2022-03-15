@@ -5,13 +5,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-redis
+  name: Default
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    name: courses-redis
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-redis
-  name: courses-redis
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-redis
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-redis
+        name: Default
     spec:
       containers:
         - env:
@@ -56,13 +56,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-celery
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-celery
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -72,13 +72,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-celery
-  name: courses-celery
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-celery
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -87,7 +87,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-celery
+        name: Default
     spec:
       containers:
         - command:
@@ -120,13 +120,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-backend
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-backend
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -136,13 +136,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-backend
-  name: courses-backend
+    name: Default
+  name: Default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: courses-backend
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -151,7 +151,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-backend
+        name: Default
     spec:
       containers:
         - command:
@@ -190,7 +190,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-backend
+  name: Default
 spec:
   rules:
     - host: penncourseplan.com
@@ -198,28 +198,28 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /assets
@@ -229,35 +229,35 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /assets
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /webhook
@@ -267,28 +267,28 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: Default
                 port:
                   number: 80
             path: /assets
@@ -359,13 +359,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-landing
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-landing
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -375,13 +375,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-landing
-  name: courses-landing
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-landing
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -390,7 +390,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-landing
+        name: Default
     spec:
       containers:
         - env:
@@ -414,7 +414,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-landing
+  name: Default
 spec:
   rules:
     - host: penncourses.org
@@ -422,7 +422,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-landing
+                name: Default
                 port:
                   number: 80
             path: /
@@ -455,13 +455,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-plan
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-plan
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -471,13 +471,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-plan
-  name: courses-plan
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-plan
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -486,7 +486,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-plan
+        name: Default
     spec:
       containers:
         - env:
@@ -510,7 +510,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-plan
+  name: Default
 spec:
   rules:
     - host: penncourseplan.org
@@ -518,7 +518,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-plan
+                name: Default
                 port:
                   number: 80
             path: /
@@ -551,13 +551,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-alert
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-alert
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -567,13 +567,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-alert
-  name: courses-alert
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-alert
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -582,7 +582,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-alert
+        name: Default
     spec:
       containers:
         - env:
@@ -606,7 +606,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-alert
+  name: Default
 spec:
   rules:
     - host: penncoursealert.org
@@ -614,7 +614,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-alert
+                name: Default
                 port:
                   number: 80
             path: /
@@ -647,13 +647,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-review
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: courses-review
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -663,13 +663,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-    name: courses-review
-  name: courses-review
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: courses-review
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -678,7 +678,7 @@ spec:
   template:
     metadata:
       labels:
-        name: courses-review
+        name: Default
     spec:
       containers:
         - env:
@@ -702,7 +702,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TESTSHA
-  name: courses-review
+  name: Default
 spec:
   rules:
     - host: penncoursereview.org
@@ -710,7 +710,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-review
+                name: Default
                 port:
                   number: 80
             path: /

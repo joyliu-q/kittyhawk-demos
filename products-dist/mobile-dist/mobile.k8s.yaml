@@ -5,13 +5,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-  name: mobile-django
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: mobile-django
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-    name: mobile-django
-  name: mobile-django
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mobile-django
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: mobile-django
+        name: Default
     spec:
       containers:
         - env:
@@ -63,7 +63,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-  name: mobile-django
+  name: Default
 spec:
   rules:
     - host: studentlife.pennlabs.org
@@ -71,7 +71,7 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: Default
                 port:
                   number: 80
             path: /
@@ -81,14 +81,14 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: mobile-django
+                name: Default
                 port:
                   number: 80
             path: /assets
@@ -98,14 +98,14 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: mobile-django
+                name: Default
                 port:
                   number: 80
             path: /assets
@@ -160,13 +160,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-  name: mobile-react
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: mobile-react
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -176,13 +176,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-    name: mobile-react
-  name: mobile-react
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mobile-react
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -191,7 +191,7 @@ spec:
   template:
     metadata:
       labels:
-        name: mobile-react
+        name: Default
     spec:
       containers:
         - env:
@@ -215,7 +215,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TESTSHA
-  name: mobile-react
+  name: Default
 spec:
   rules:
     - host: portal.pennmobile.org
@@ -223,7 +223,7 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-react
+                name: Default
                 port:
                   number: 80
             path: /

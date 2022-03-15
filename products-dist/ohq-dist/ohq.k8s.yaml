@@ -5,13 +5,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-django-asgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: ohq-django-asgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: ohq-django-asgi
-  name: ohq-django-asgi
+    name: Default
+  name: Default
 spec:
   replicas: 4
   selector:
     matchLabels:
-      name: ohq-django-asgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-django-asgi
+        name: Default
     spec:
       containers:
         - command:
@@ -67,7 +67,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-django-asgi
+  name: Default
 spec:
   rules:
     - host: ohq.io
@@ -75,7 +75,7 @@ spec:
         paths:
           - backend:
               service:
-                name: ohq-django-asgi
+                name: Default
                 port:
                   number: 80
             path: /api/ws
@@ -108,13 +108,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-django-wsgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: ohq-django-wsgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -124,13 +124,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: ohq-django-wsgi
-  name: ohq-django-wsgi
+    name: Default
+  name: Default
 spec:
   replicas: 8
   selector:
     matchLabels:
-      name: ohq-django-wsgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -139,7 +139,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-django-wsgi
+        name: Default
     spec:
       containers:
         - env:
@@ -168,7 +168,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-django-wsgi
+  name: Default
 spec:
   rules:
     - host: ohq.io
@@ -176,21 +176,21 @@ spec:
         paths:
           - backend:
               service:
-                name: ohq-django-wsgi
+                name: Default
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: ohq-django-wsgi
+                name: Default
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: ohq-django-wsgi
+                name: Default
                 port:
                   number: 80
             path: /assets
@@ -223,13 +223,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-react
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: ohq-react
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -239,13 +239,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: ohq-react
-  name: ohq-react
+    name: Default
+  name: Default
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: ohq-react
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -254,7 +254,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-react
+        name: Default
     spec:
       containers:
         - env:
@@ -278,7 +278,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-react
+  name: Default
 spec:
   rules:
     - host: ohq.io
@@ -286,7 +286,7 @@ spec:
         paths:
           - backend:
               service:
-                name: ohq-react
+                name: Default
                 port:
                   number: 80
             path: /
@@ -319,13 +319,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-redis
+  name: Default
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    name: ohq-redis
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -335,13 +335,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: ohq-redis
-  name: ohq-redis
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ohq-redis
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -350,7 +350,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-redis
+        name: Default
     spec:
       containers:
         - env:
@@ -370,13 +370,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-  name: ohq-celery
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: ohq-celery
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -386,13 +386,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TESTSHA
-    name: ohq-celery
-  name: ohq-celery
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ohq-celery
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -401,7 +401,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-celery
+        name: Default
     spec:
       containers:
         - command:

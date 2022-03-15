@@ -5,13 +5,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-redis
+  name: Default
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    name: clubs-redis
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -21,13 +21,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-redis
-  name: clubs-redis
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: clubs-redis
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-redis
+        name: Default
     spec:
       containers:
         - env:
@@ -56,13 +56,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-django-asgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-django-asgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -72,13 +72,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-django-asgi
-  name: clubs-django-asgi
+    name: Default
+  name: Default
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: clubs-django-asgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -87,7 +87,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-django-asgi
+        name: Default
     spec:
       containers:
         - command:
@@ -118,7 +118,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-django-asgi
+  name: Default
 spec:
   rules:
     - host: pennclubs.com
@@ -126,7 +126,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-django-asgi
+                name: Default
                 port:
                   number: 80
             path: /api/ws
@@ -159,13 +159,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-django-wsgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-django-wsgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -175,13 +175,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-django-wsgi
-  name: clubs-django-wsgi
+    name: Default
+  name: Default
 spec:
   replicas: 5
   selector:
     matchLabels:
-      name: clubs-django-wsgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -190,7 +190,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-django-wsgi
+        name: Default
     spec:
       containers:
         - env:
@@ -219,7 +219,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-django-wsgi
+  name: Default
 spec:
   rules:
     - host: pennclubs.com
@@ -227,7 +227,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-django-wsgi
+                name: Default
                 port:
                   number: 80
             path: /api
@@ -260,13 +260,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-react
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-react
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -276,13 +276,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-react
-  name: clubs-react
+    name: Default
+  name: Default
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: clubs-react
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -291,7 +291,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-react
+        name: Default
     spec:
       containers:
         - env:
@@ -315,7 +315,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-react
+  name: Default
 spec:
   rules:
     - host: pennclubs.com
@@ -323,7 +323,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-react
+                name: Default
                 port:
                   number: 80
             path: /
@@ -356,13 +356,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-redis
+  name: Default
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    name: clubs-hub-redis
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -372,13 +372,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-hub-redis
-  name: clubs-hub-redis
+    name: Default
+  name: Default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: clubs-hub-redis
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -387,7 +387,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-hub-redis
+        name: Default
     spec:
       containers:
         - env:
@@ -407,13 +407,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-django-asgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-hub-django-asgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -423,13 +423,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-hub-django-asgi
-  name: clubs-hub-django-asgi
+    name: Default
+  name: Default
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: clubs-hub-django-asgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -438,7 +438,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-hub-django-asgi
+        name: Default
     spec:
       containers:
         - command:
@@ -471,7 +471,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-django-asgi
+  name: Default
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -479,7 +479,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-django-asgi
+                name: Default
                 port:
                   number: 80
             path: /api/ws
@@ -512,13 +512,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-django-wsgi
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-hub-django-wsgi
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -528,13 +528,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-hub-django-wsgi
-  name: clubs-hub-django-wsgi
+    name: Default
+  name: Default
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: clubs-hub-django-wsgi
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -543,7 +543,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-hub-django-wsgi
+        name: Default
     spec:
       containers:
         - env:
@@ -574,7 +574,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-django-wsgi
+  name: Default
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -582,7 +582,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-django-wsgi
+                name: Default
                 port:
                   number: 80
             path: /api
@@ -615,13 +615,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-react
+  name: Default
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: clubs-hub-react
+    name: Default
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -631,13 +631,13 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-    name: clubs-hub-react
-  name: clubs-hub-react
+    name: Default
+  name: Default
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: clubs-hub-react
+      name: Default
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -646,7 +646,7 @@ spec:
   template:
     metadata:
       labels:
-        name: clubs-hub-react
+        name: Default
     spec:
       containers:
         - env:
@@ -672,7 +672,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TESTSHA
-  name: clubs-hub-react
+  name: Default
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -680,7 +680,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-react
+                name: Default
                 port:
                   number: 80
             path: /
