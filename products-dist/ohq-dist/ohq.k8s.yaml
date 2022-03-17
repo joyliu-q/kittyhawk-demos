@@ -4,14 +4,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-django-asgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: ohq-django-asgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -19,15 +19,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-asgi
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-    name: ohq-django-asgi
+    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-asgi
 spec:
   replicas: 4
   selector:
     matchLabels:
-      name: ohq-django-asgi
+      app.kubernetes.io/name: ohq-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-django-asgi
+        app.kubernetes.io/name: ohq-django-asgi
     spec:
       containers:
         - command:
@@ -49,11 +49,11 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
-              value: TESTSHA
+              value: TAG_FROM_CI
           envFrom:
             - secretRef:
                 name: office-hours-queue
-          image: pennlabs/office-hours-queue-backend:TESTSHA
+          image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -66,8 +66,8 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-django-asgi
 spec:
   rules:
     - host: ohq.io
@@ -75,7 +75,7 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: ohq-django-asgi
                 port:
                   number: 80
             path: /api/ws
@@ -107,14 +107,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-django-wsgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: ohq-django-wsgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -122,15 +122,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-wsgi
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-    name: ohq-django-wsgi
+    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-wsgi
 spec:
   replicas: 8
   selector:
     matchLabels:
-      name: ohq-django-wsgi
+      app.kubernetes.io/name: ohq-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -139,7 +139,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-django-wsgi
+        app.kubernetes.io/name: ohq-django-wsgi
     spec:
       containers:
         - env:
@@ -150,11 +150,11 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
-              value: TESTSHA
+              value: TAG_FROM_CI
           envFrom:
             - secretRef:
                 name: office-hours-queue
-          image: pennlabs/office-hours-queue-backend:TESTSHA
+          image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -167,8 +167,8 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-django-wsgi
 spec:
   rules:
     - host: ohq.io
@@ -176,21 +176,21 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: ohq-django-wsgi
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: Default
+                name: ohq-django-wsgi
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: Default
+                name: ohq-django-wsgi
                 port:
                   number: 80
             path: /assets
@@ -222,14 +222,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: ohq-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -237,15 +237,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-react
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-    name: ohq-react
+    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: ohq-react
+      app.kubernetes.io/name: ohq-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -254,7 +254,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-react
+        app.kubernetes.io/name: ohq-react
     spec:
       containers:
         - env:
@@ -263,8 +263,8 @@ spec:
             - name: PORT
               value: "80"
             - name: GIT_SHA
-              value: TESTSHA
-          image: pennlabs/office-hours-queue-frontend:TESTSHA
+              value: TAG_FROM_CI
+          image: pennlabs/office-hours-queue-frontend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -277,8 +277,8 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-react
 spec:
   rules:
     - host: ohq.io
@@ -286,7 +286,7 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: ohq-react
                 port:
                   number: 80
             path: /
@@ -318,14 +318,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-redis
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    name: Default
+    app.kubernetes.io/name: ohq-redis
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -333,15 +333,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-redis
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-    name: ohq-redis
+    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ohq-redis
+      app.kubernetes.io/name: ohq-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -350,12 +350,12 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-redis
+        app.kubernetes.io/name: ohq-redis
     spec:
       containers:
         - env:
             - name: GIT_SHA
-              value: TESTSHA
+              value: TAG_FROM_CI
           image: redis:6.0
           imagePullPolicy: IfNotPresent
           name: worker
@@ -369,14 +369,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: ohq-celery
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: ohq-celery
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -384,15 +384,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-celery
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
-    name: ohq-celery
+    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-celery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ohq-celery
+      app.kubernetes.io/name: ohq-celery
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -401,7 +401,7 @@ spec:
   template:
     metadata:
       labels:
-        name: ohq-celery
+        app.kubernetes.io/name: ohq-celery
     spec:
       containers:
         - command:
@@ -416,11 +416,11 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: officehoursqueue.settings.production
             - name: GIT_SHA
-              value: TESTSHA
+              value: TAG_FROM_CI
           envFrom:
             - secretRef:
                 name: office-hours-queue
-          image: pennlabs/office-hours-queue-backend:TESTSHA
+          image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -433,7 +433,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
+    app.kubernetes.io/version: TAG_FROM_CI
     name: ohq-calculate-waits
   name: ohq-calculate-waits
 spec:
@@ -449,11 +449,11 @@ spec:
                 - calculatewaittimes
               env:
                 - name: GIT_SHA
-                  value: TESTSHA
+                  value: TAG_FROM_CI
               envFrom:
                 - secretRef:
                     name: office-hours-queue
-              image: pennlabs/office-hours-queue-backend:TESTSHA
+              image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
@@ -466,7 +466,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
+    app.kubernetes.io/version: TAG_FROM_CI
     name: ohq-queue-daily-stat
   name: ohq-queue-daily-stat
 spec:
@@ -482,11 +482,11 @@ spec:
                 - queue_daily_stat
               env:
                 - name: GIT_SHA
-                  value: TESTSHA
+                  value: TAG_FROM_CI
               envFrom:
                 - secretRef:
                     name: office-hours-queue
-              image: pennlabs/office-hours-queue-backend:TESTSHA
+              image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
@@ -499,7 +499,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TESTSHA
+    app.kubernetes.io/version: TAG_FROM_CI
     name: ohq-queue-heatmap-stat
   name: ohq-queue-heatmap-stat
 spec:
@@ -515,11 +515,11 @@ spec:
                 - queue_heatmap_stat
               env:
                 - name: GIT_SHA
-                  value: TESTSHA
+                  value: TAG_FROM_CI
               envFrom:
                 - secretRef:
                     name: office-hours-queue
-              image: pennlabs/office-hours-queue-backend:TESTSHA
+              image: pennlabs/office-hours-queue-backend:TAG_FROM_CI
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never

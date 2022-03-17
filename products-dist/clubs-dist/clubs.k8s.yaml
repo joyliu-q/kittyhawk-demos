@@ -1,0 +1,905 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: clubs-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-redis
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: redis:6.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 6379
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-asgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-django-asgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-asgi
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-asgi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-django-asgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-django-asgi
+    spec:
+      containers:
+        - command:
+            - /usr/local/bin/asgi-run
+          env:
+            - name: REDIS_HOST
+              value: penn-clubs-redis
+            - name: DOMAINS
+              value: pennclubs.com
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: penn-clubs
+          image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-asgi
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-django-asgi
+                port:
+                  number: 80
+            path: /api/ws
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-wsgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-django-wsgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-wsgi
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-wsgi
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-django-wsgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-django-wsgi
+    spec:
+      containers:
+        - env:
+            - name: REDIS_HOST
+              value: penn-clubs-redis
+            - name: DOMAINS
+              value: pennclubs.com
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: penn-clubs
+          image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-django-wsgi
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-django-wsgi
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-react
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-react
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-react
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-react
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-react
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-react
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: pennclubs.com
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/penn-clubs-frontend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-react
+spec:
+  rules:
+    - host: pennclubs.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-react
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - pennclubs.com
+      secretName: pennclubs-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: pennclubs-com
+spec:
+  dnsNames:
+    - pennclubs.com
+    - "*.pennclubs.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennclubs-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: clubs-hub-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-redis
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-hub-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-hub-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: redis:6.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 6379
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-asgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-hub-django-asgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-asgi
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-asgi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-hub-django-asgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-hub-django-asgi
+    spec:
+      containers:
+        - command:
+            - /usr/local/bin/asgi-run
+          env:
+            - name: REDIS_HOST
+              value: penn-clubs-hub-redis
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
+            - name: DOMAINS
+              value: hub.provost.upenn.edu
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: first-year-hub
+          image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-asgi
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-hub-django-asgi
+                port:
+                  number: 80
+            path: /api/ws
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-wsgi
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-hub-django-wsgi
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-wsgi
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-wsgi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-hub-django-wsgi
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-hub-django-wsgi
+    spec:
+      containers:
+        - env:
+            - name: REDIS_HOST
+              value: penn-clubs-hub-redis
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
+            - name: DOMAINS
+              value: hub.provost.upenn.edu
+            - name: DJANGO_SETTINGS_MODULE
+              value: pennclubs.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: first-year-hub
+          image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-django-wsgi
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-hub-django-wsgi
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-react
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: clubs-hub-react
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-react
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-react
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clubs-hub-react
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clubs-hub-react
+    spec:
+      containers:
+        - env:
+            - name: NEXT_PUBLIC_SITE_NAME
+              value: fyh
+            - name: DOMAIN
+              value: hub.provost.upenn.edu
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/penn-clubs-frontend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: clubs-hub-react
+spec:
+  rules:
+    - host: hub.provost.upenn.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: clubs-hub-react
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hub.provost.upenn.edu
+      secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: hub-provost-upenn-edu
+spec:
+  dnsNames:
+    - hub.provost.upenn.edu
+    - "*.hub.provost.upenn.edu"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: hub-provost-upenn-edu-tls
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-rank-clubs
+  name: clubs-rank-clubs
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - rank
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 8 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-daily-notifications
+  name: clubs-daily-notifications
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - daily_notifications
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 13 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-hub-daily-notifications
+  name: clubs-hub-daily-notifications
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - daily_notifications
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 13 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-calendar-import
+  name: clubs-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_calendar_events
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: penn-clubs
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-hub-calendar-import
+  name: clubs-hub-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_calendar_events
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: clubs-hub-paideia-calendar-import
+  name: clubs-hub-paideia-calendar-import
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - import_paideia_events
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: first-year-hub
+              image: pennlabs/penn-clubs-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 12 * * *
+  successfulJobsHistoryLimit: 1

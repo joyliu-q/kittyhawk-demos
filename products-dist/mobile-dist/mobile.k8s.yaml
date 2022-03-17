@@ -4,14 +4,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: mobile-django
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: mobile-django
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -19,15 +19,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-django
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-    name: mobile-django
+    app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-django
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mobile-django
+      app.kubernetes.io/name: mobile-django
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -36,7 +36,7 @@ spec:
   template:
     metadata:
       labels:
-        name: mobile-django
+        app.kubernetes.io/name: mobile-django
     spec:
       containers:
         - env:
@@ -45,11 +45,11 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: pennmobile.settings.production
             - name: GIT_SHA
-              value: TESTSHA
+              value: TAG_FROM_CI
           envFrom:
             - secretRef:
                 name: penn-mobile
-          image: pennlabs/penn-mobile-backend:TESTSHA
+          image: pennlabs/penn-mobile-backend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -62,8 +62,8 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: mobile-django
 spec:
   rules:
     - host: studentlife.pennlabs.org
@@ -71,7 +71,7 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: mobile-django
                 port:
                   number: 80
             path: /
@@ -81,14 +81,14 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: Default
+                name: mobile-django
                 port:
                   number: 80
             path: /assets
@@ -98,14 +98,14 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: Default
+                name: mobile-django
                 port:
                   number: 80
             path: /assets
@@ -159,14 +159,14 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: mobile-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    name: Default
+    app.kubernetes.io/name: mobile-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -174,15 +174,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-react
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-    name: mobile-react
+    app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-react
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mobile-react
+      app.kubernetes.io/name: mobile-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -191,7 +191,7 @@ spec:
   template:
     metadata:
       labels:
-        name: mobile-react
+        app.kubernetes.io/name: mobile-react
     spec:
       containers:
         - env:
@@ -200,8 +200,8 @@ spec:
             - name: PORT
               value: "80"
             - name: GIT_SHA
-              value: TESTSHA
-          image: pennlabs/penn-mobile-frontend:TESTSHA
+              value: TAG_FROM_CI
+          image: pennlabs/penn-mobile-frontend:TAG_FROM_CI
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -214,8 +214,8 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
-  name: Default
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: mobile-react
 spec:
   rules:
     - host: portal.pennmobile.org
@@ -223,7 +223,7 @@ spec:
         paths:
           - backend:
               service:
-                name: Default
+                name: mobile-react
                 port:
                   number: 80
             path: /
@@ -255,7 +255,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/part-of: mobile
-    app.kubernetes.io/version: TESTSHA
+    app.kubernetes.io/version: TAG_FROM_CI
     name: mobile-get-laundry-snapshots
   name: mobile-get-laundry-snapshots
 spec:
@@ -273,11 +273,11 @@ spec:
                 - name: DJANGO_SETTINGS_MODULE
                   value: pennmobile.settings.production
                 - name: GIT_SHA
-                  value: TESTSHA
+                  value: TAG_FROM_CI
               envFrom:
                 - secretRef:
                     name: penn-mobile
-              image: pennlabs/penn-mobile-backend:TESTSHA
+              image: pennlabs/penn-mobile-backend:TAG_FROM_CI
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never

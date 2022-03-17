@@ -1,0 +1,805 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: courses-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-redis
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: redis:4.0
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 6379
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-celery
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-celery
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-celery
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-celery
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-celery
+    spec:
+      containers:
+        - command:
+            - celery
+            - worker
+            - -A
+            - PennCourses
+            - -Q
+            - alerts,celery
+            - -linfo
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: PennCourses.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          image: pennlabs/penn-courses-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-backend
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-backend
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-backend
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-backend
+    spec:
+      containers:
+        - command:
+            - celery
+            - worker
+            - -A
+            - PennCourses
+            - -Q
+            - alerts,celery
+            - -linfo
+          env:
+            - name: PORT
+              value: "80"
+            - name: DOMAINS
+              value: penncourseplan.com,penncoursealert.com,penncoursereview.com
+            - name: DJANGO_SETTINGS_MODULE
+              value: PennCourses.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: penn-courses
+          image: pennlabs/penn-courses-backend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/content-security-policy: frame-ancestors 'none';
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-backend
+spec:
+  rules:
+    - host: penncourseplan.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+    - host: penncoursealert.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /webhook
+            pathType: Prefix
+    - host: penncoursereview.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /accounts
+            pathType: Prefix
+          - backend:
+              service:
+                name: courses-backend
+                port:
+                  number: 80
+            path: /assets
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourseplan.com
+      secretName: penncourseplan-com-tls
+    - hosts:
+        - penncoursealert.com
+      secretName: penncoursealert-com-tls
+    - hosts:
+        - penncoursereview.com
+      secretName: penncoursereview-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncourseplan-com
+spec:
+  dnsNames:
+    - penncourseplan.com
+    - "*.penncourseplan.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourseplan-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncoursealert-com
+spec:
+  dnsNames:
+    - penncoursealert.com
+    - "*.penncoursealert.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursealert-com-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncoursereview-com
+spec:
+  dnsNames:
+    - penncoursereview.com
+    - "*.penncoursereview.com"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursereview-com-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-landing
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-landing
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-landing
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-landing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-landing
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-landing
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncourses.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/pcx-landing:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-landing
+spec:
+  rules:
+    - host: penncourses.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-landing
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourses.org
+      secretName: penncourses-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncourses-org
+spec:
+  dnsNames:
+    - penncourses.org
+    - "*.penncourses.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourses-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-plan
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-plan
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-plan
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-plan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-plan
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-plan
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncourseplan.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/pcp-frontend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-plan
+spec:
+  rules:
+    - host: penncourseplan.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-plan
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncourseplan.org
+      secretName: penncourseplan-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncourseplan-org
+spec:
+  dnsNames:
+    - penncourseplan.org
+    - "*.penncourseplan.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncourseplan-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-alert
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-alert
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-alert
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-alert
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-alert
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-alert
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncoursealert.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/pca-frontend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-alert
+spec:
+  rules:
+    - host: penncoursealert.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-alert
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncoursealert.org
+      secretName: penncoursealert-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncoursealert-org
+spec:
+  dnsNames:
+    - penncoursealert.org
+    - "*.penncoursealert.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursealert-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-review
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: courses-review
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-review
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: courses-review
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: courses-review
+    spec:
+      containers:
+        - env:
+            - name: DOMAIN
+              value: penncoursereview.org
+            - name: PORT
+              value: "80"
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: pennlabs/pcr-frontend:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+      volumes: []
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: courses-review
+spec:
+  rules:
+    - host: penncoursereview.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: courses-review
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - penncoursereview.org
+      secretName: penncoursereview-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+  name: penncoursereview-org
+spec:
+  dnsNames:
+    - penncoursereview.org
+    - "*.penncoursereview.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: penncoursereview-org-tls
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: courses-load-courses
+  name: courses-load-courses
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - registrarimport
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+              image: pennlabs/penn-courses-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 3 * * *
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/version: TAG_FROM_CI
+    name: courses-report-stats
+  name: courses-report-stats
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python
+                - manage.py
+                - alertstats
+                - "1"
+                - --slack
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: penn-courses
+              image: pennlabs/penn-courses-backend:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: 0 20 * * *
+  successfulJobsHistoryLimit: 1
