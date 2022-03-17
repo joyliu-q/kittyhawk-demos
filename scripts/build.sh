@@ -10,7 +10,7 @@ generate_yaml () {
 }
 
 # Build for all products
-generate_yaml courses
 generate_yaml clubs
+generate_yaml courses
 generate_yaml mobile
 generate_yaml ohq
