@@ -741,9 +741,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-load-courses
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TAG_FROM_CI
-    name: courses-load-courses
   name: courses-load-courses
 spec:
   failedJobsHistoryLimit: 1
@@ -774,9 +774,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: courses-report-stats
     app.kubernetes.io/part-of: courses
     app.kubernetes.io/version: TAG_FROM_CI
-    name: courses-report-stats
   name: courses-report-stats
 spec:
   failedJobsHistoryLimit: 1

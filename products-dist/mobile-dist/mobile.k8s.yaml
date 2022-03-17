@@ -254,9 +254,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-get-laundry-snapshots
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TAG_FROM_CI
-    name: mobile-get-laundry-snapshots
   name: mobile-get-laundry-snapshots
 spec:
   failedJobsHistoryLimit: 1

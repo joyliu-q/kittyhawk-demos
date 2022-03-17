@@ -711,9 +711,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-rank-clubs
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-rank-clubs
   name: clubs-rank-clubs
 spec:
   failedJobsHistoryLimit: 1
@@ -744,9 +744,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-daily-notifications
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-daily-notifications
   name: clubs-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -777,9 +777,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-daily-notifications
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-hub-daily-notifications
   name: clubs-hub-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -810,9 +810,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-calendar-import
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-calendar-import
   name: clubs-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -843,9 +843,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-calendar-import
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-hub-calendar-import
   name: clubs-hub-calendar-import
 spec:
   failedJobsHistoryLimit: 1
@@ -876,9 +876,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-paideia-calendar-import
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
-    name: clubs-hub-paideia-calendar-import
   name: clubs-hub-paideia-calendar-import
 spec:
   failedJobsHistoryLimit: 1

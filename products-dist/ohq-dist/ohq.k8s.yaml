@@ -432,9 +432,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-calculate-waits
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
-    name: ohq-calculate-waits
   name: ohq-calculate-waits
 spec:
   failedJobsHistoryLimit: 1
@@ -465,9 +465,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-queue-daily-stat
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
-    name: ohq-queue-daily-stat
   name: ohq-queue-daily-stat
 spec:
   failedJobsHistoryLimit: 1
@@ -498,9 +498,9 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-queue-heatmap-stat
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
-    name: ohq-queue-heatmap-stat
   name: ohq-queue-heatmap-stat
 spec:
   failedJobsHistoryLimit: 1
