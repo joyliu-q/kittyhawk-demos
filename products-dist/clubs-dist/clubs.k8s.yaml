@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-redis
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-redis
@@ -54,6 +55,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-asgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-django-asgi
@@ -116,6 +118,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-asgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-django-asgi
@@ -141,6 +144,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennclubs-com
   name: pennclubs-com
 spec:
   dnsNames:
@@ -157,6 +161,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-wsgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-django-wsgi
@@ -217,6 +222,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-django-wsgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-django-wsgi
@@ -242,6 +248,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennclubs-com
   name: pennclubs-com
 spec:
   dnsNames:
@@ -258,6 +265,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-react
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-react
@@ -313,6 +321,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-react
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-react
@@ -338,6 +347,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennclubs-com
   name: pennclubs-com
 spec:
   dnsNames:
@@ -354,6 +364,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-redis
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-redis
@@ -405,6 +416,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-asgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-django-asgi
@@ -469,6 +481,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-asgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-django-asgi
@@ -494,6 +507,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: hub-provost-upenn-edu
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -510,6 +524,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-wsgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-django-wsgi
@@ -572,6 +587,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-django-wsgi
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-django-wsgi
@@ -597,6 +613,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: hub-provost-upenn-edu
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -613,6 +630,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-react
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-react
@@ -670,6 +688,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: clubs-hub-react
     app.kubernetes.io/part-of: clubs
     app.kubernetes.io/version: TAG_FROM_CI
   name: clubs-hub-react
@@ -695,6 +714,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: hub-provost-upenn-edu
   name: hub-provost-upenn-edu
 spec:
   dnsNames:

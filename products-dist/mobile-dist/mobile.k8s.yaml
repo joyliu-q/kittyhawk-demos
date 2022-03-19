@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-django
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-django
@@ -61,6 +62,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-django
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-django
@@ -126,6 +128,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennlabs-org
   name: pennlabs-org
 spec:
   dnsNames:
@@ -142,6 +145,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennmobile-org
   name: pennmobile-org
 spec:
   dnsNames:
@@ -158,6 +162,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-react
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-react
@@ -213,6 +218,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: mobile-react
     app.kubernetes.io/part-of: mobile
     app.kubernetes.io/version: TAG_FROM_CI
   name: mobile-react
@@ -238,6 +244,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennmobile-org
   name: pennmobile-org
 spec:
   dnsNames:

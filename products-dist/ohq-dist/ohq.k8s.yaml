@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-asgi
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-asgi
@@ -65,6 +66,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-asgi
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-asgi
@@ -90,6 +92,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-io
   name: ohq-io
 spec:
   dnsNames:
@@ -106,6 +109,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-wsgi
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-wsgi
@@ -166,6 +170,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-django-wsgi
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-django-wsgi
@@ -205,6 +210,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-io
   name: ohq-io
 spec:
   dnsNames:
@@ -221,6 +227,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-react
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-react
@@ -276,6 +283,7 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-react
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-react
@@ -301,6 +309,7 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-io
   name: ohq-io
 spec:
   dnsNames:
@@ -317,6 +326,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-redis
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-redis
@@ -368,6 +378,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: ohq-celery
     app.kubernetes.io/part-of: ohq
     app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-celery
