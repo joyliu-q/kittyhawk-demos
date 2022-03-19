@@ -1,0 +1,238 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-flask
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-flask
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app.kubernetes.io/name: labs-api-server-flask
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-flask
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: labs-api-server-flask
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: labs-api-server-flask
+    spec:
+      containers:
+        - env:
+            - name: DOMAINS
+              value: api.pennlabs.org
+            - name: DJANGO_SETTINGS_MODULE
+              value: labs_api_server.settings.production
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          envFrom:
+            - secretRef:
+                name: labs-api-server
+          image: pennlabs/labs-api-server:TAG_FROM_CI
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /app/ios_key.p8
+              name: labs-api-server-ios-key
+              subPath: ios-key
+      volumes:
+        - name: labs-api-server-ios-key
+          secret:
+            items:
+              - key: ios-key
+                path: ios-key
+            secretName: labs-api-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-flask
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-flask
+spec:
+  rules:
+    - host: api.pennlabs.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: labs-api-server-flask
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - api.pennlabs.org
+      secretName: pennlabs-org-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: pennlabs-org
+  name: pennlabs-org
+spec:
+  dnsNames:
+    - pennlabs.org
+    - "*.pennlabs.org"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: wildcard-letsencrypt-prod
+  secretName: pennlabs-org-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-redis
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: labs-api-server-redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-redis
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: labs-api-server-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: labs-api-server-redis
+    spec:
+      containers:
+        - env:
+            - name: GIT_SHA
+              value: TAG_FROM_CI
+          image: redis:5
+          imagePullPolicy: IfNotPresent
+          name: worker
+          ports:
+            - containerPort: 6379
+      volumes: []
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-laundry
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-laundry
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python3
+                - cron/save_laundry_data.py
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: labs-api-server
+              image: pennlabs/labs-api-server:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+          restartPolicy: Never
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 1
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kittyhawk
+    app.kubernetes.io/name: labs-api-server-gsr-notifications
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
+  name: labs-api-server-gsr-notifications
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - command:
+                - python3
+                - cron/send_gsr_push_notifications.py
+              env:
+                - name: GIT_SHA
+                  value: TAG_FROM_CI
+              envFrom:
+                - secretRef:
+                    name: labs-api-server
+              image: pennlabs/labs-api-server:TAG_FROM_CI
+              imagePullPolicy: IfNotPresent
+              name: worker
+              volumeMounts:
+                - mountPath: /app/ios_key.p8
+                  name: labs-api-server-ios-key
+                  subPath: ios-key
+          restartPolicy: Never
+          volumes:
+            - name: labs-api-server-ios-key
+              secret:
+                items:
+                  - key: ios-key
+                    path: ios-key
+                secretName: labs-api-server
+  schedule: 20,50 * * * *
+  successfulJobsHistoryLimit: 1

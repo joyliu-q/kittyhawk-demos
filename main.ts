@@ -1,6 +1,7 @@
 import { App } from 'cdk8s';
 import { ClubsChart, CoursesChart, MobileChart, OHQChart } from './src/config';
 import { BasicsChart } from './src/config/basics';
+import { LabsApiServerChart } from './src/config/labs-api-server';
 
 const app = new App();
 const gitSha = process.env.GIT_SHA;
@@ -29,6 +30,10 @@ switch (process.env.RELEASE_NAME) {
   case 'ohq':
     process.env.GIT_SHA = "TAG_FROM_CI";
     new OHQChart(app, 'ohq');
+    break;
+  case 'labs-api-server':
+    process.env.GIT_SHA = "TAG_FROM_CI";
+    new LabsApiServerChart(app, 'labs-api-server');
     break;
   default:
       throw new Error(`Unknown chart name: ${process.env.RELEASE_NAME}`);

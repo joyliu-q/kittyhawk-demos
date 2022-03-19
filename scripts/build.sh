@@ -19,3 +19,5 @@ generate_yaml penn-clubs
 generate_yaml penn-courses
 generate_yaml penn-mobile
 generate_yaml ohq
+generate_yaml labs-api-server
+
