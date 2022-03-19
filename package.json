@@ -12,6 +12,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "build": "bash ./scripts/build.sh",
+    "build-basics": "export RELEASE_NAME=\"penn-basics\" GIT_SHA=\"c257c5b875c179dbf108f85779c379830a2fc2a8\" && yarn compile && yarn synth",
     "build-mobile": "export RELEASE_NAME=\"mobile\" GIT_SHA=\"TAG_FROM_CI\" && yarn compile && yarn synth",
     "build-clubs": "export RELEASE_NAME=\"clubs\" GIT_SHA=\"TAG_FROM_CI\" && yarn compile && yarn synth",
     "build-courses": "export RELEASE_NAME=\"courses\" GIT_SHA=\"TAG_FROM_CI\" && yarn compile && yarn synth",
