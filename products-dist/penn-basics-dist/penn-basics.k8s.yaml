@@ -86,9 +86,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennbasics-com
+    app.kubernetes.io/part-of: penn-basics
+    app.kubernetes.io/version: c257c5b875c179dbf108f85779c379830a2fc2a8
   name: pennbasics-com
 spec:
   dnsNames:

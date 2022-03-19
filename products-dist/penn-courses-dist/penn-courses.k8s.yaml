@@ -311,9 +311,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncourseplan-com
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncourseplan-com
 spec:
   dnsNames:
@@ -328,9 +333,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncoursealert-com
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncoursealert-com
 spec:
   dnsNames:
@@ -345,9 +355,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncoursereview-com
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncoursereview-com
 spec:
   dnsNames:
@@ -444,9 +459,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncourses-org
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncourses-org
 spec:
   dnsNames:
@@ -543,9 +563,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncourseplan-org
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncourseplan-org
 spec:
   dnsNames:
@@ -642,9 +667,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncoursealert-org
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncoursealert-org
 spec:
   dnsNames:
@@ -741,9 +771,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: penncoursereview-org
+    app.kubernetes.io/part-of: penn-courses
+    app.kubernetes.io/version: TAG_FROM_CI
   name: penncoursereview-org
 spec:
   dnsNames:

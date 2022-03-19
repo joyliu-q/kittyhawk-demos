@@ -96,9 +96,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  finalizers:
+    - kubernetes
   labels:
+    app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennlabs-org
+    app.kubernetes.io/part-of: labs-api-server
+    app.kubernetes.io/version: TAG_FROM_CI
   name: pennlabs-org
 spec:
   dnsNames:
