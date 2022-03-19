@@ -3,16 +3,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-redis
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-redis
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-redis
+  name: penn-courses-redis
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    app.kubernetes.io/name: courses-redis
+    app.kubernetes.io/name: penn-courses-redis
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -20,15 +20,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-redis
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-redis
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-redis
+  name: penn-courses-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-redis
+      app.kubernetes.io/name: penn-courses-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -37,7 +37,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-redis
+        app.kubernetes.io/name: penn-courses-redis
     spec:
       containers:
         - env:
@@ -55,16 +55,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-celery
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-celery
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-celery
+  name: penn-courses-celery
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-celery
+    app.kubernetes.io/name: penn-courses-celery
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -72,15 +72,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-celery
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-celery
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-celery
+  name: penn-courses-celery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-celery
+      app.kubernetes.io/name: penn-courses-celery
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -89,7 +89,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-celery
+        app.kubernetes.io/name: penn-courses-celery
     spec:
       containers:
         - command:
@@ -120,16 +120,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-backend
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-backend
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-backend
+  name: penn-courses-backend
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-backend
+    app.kubernetes.io/name: penn-courses-backend
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -137,15 +137,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-backend
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-backend
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-backend
+  name: penn-courses-backend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-backend
+      app.kubernetes.io/name: penn-courses-backend
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -154,7 +154,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-backend
+        app.kubernetes.io/name: penn-courses-backend
     spec:
       containers:
         - command:
@@ -191,10 +191,10 @@ metadata:
     ingress.kubernetes.io/content-security-policy: frame-ancestors 'none';
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-backend
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-backend
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-backend
+  name: penn-courses-backend
 spec:
   rules:
     - host: penncourseplan.com
@@ -202,28 +202,28 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /assets
@@ -233,35 +233,35 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /assets
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /webhook
@@ -271,28 +271,28 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /admin
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /accounts
             pathType: Prefix
           - backend:
               service:
-                name: courses-backend
+                name: penn-courses-backend
                 port:
                   number: 80
             path: /assets
@@ -364,16 +364,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-landing
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-landing
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-landing
+  name: penn-courses-landing
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-landing
+    app.kubernetes.io/name: penn-courses-landing
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -381,15 +381,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-landing
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-landing
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-landing
+  name: penn-courses-landing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-landing
+      app.kubernetes.io/name: penn-courses-landing
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -398,7 +398,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-landing
+        app.kubernetes.io/name: penn-courses-landing
     spec:
       containers:
         - env:
@@ -420,10 +420,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-landing
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-landing
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-landing
+  name: penn-courses-landing
 spec:
   rules:
     - host: penncourses.org
@@ -431,7 +431,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-landing
+                name: penn-courses-landing
                 port:
                   number: 80
             path: /
@@ -463,16 +463,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-plan
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-plan
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-plan
+  name: penn-courses-plan
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-plan
+    app.kubernetes.io/name: penn-courses-plan
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -480,15 +480,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-plan
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-plan
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-plan
+  name: penn-courses-plan
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-plan
+      app.kubernetes.io/name: penn-courses-plan
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -497,7 +497,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-plan
+        app.kubernetes.io/name: penn-courses-plan
     spec:
       containers:
         - env:
@@ -519,10 +519,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-plan
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-plan
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-plan
+  name: penn-courses-plan
 spec:
   rules:
     - host: penncourseplan.org
@@ -530,7 +530,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-plan
+                name: penn-courses-plan
                 port:
                   number: 80
             path: /
@@ -562,16 +562,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-alert
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-alert
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-alert
+  name: penn-courses-alert
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-alert
+    app.kubernetes.io/name: penn-courses-alert
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -579,15 +579,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-alert
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-alert
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-alert
+  name: penn-courses-alert
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-alert
+      app.kubernetes.io/name: penn-courses-alert
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -596,7 +596,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-alert
+        app.kubernetes.io/name: penn-courses-alert
     spec:
       containers:
         - env:
@@ -618,10 +618,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-alert
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-alert
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-alert
+  name: penn-courses-alert
 spec:
   rules:
     - host: penncoursealert.org
@@ -629,7 +629,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-alert
+                name: penn-courses-alert
                 port:
                   number: 80
             path: /
@@ -661,16 +661,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-review
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-review
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-review
+  name: penn-courses-review
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: courses-review
+    app.kubernetes.io/name: penn-courses-review
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -678,15 +678,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-review
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-review
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-review
+  name: penn-courses-review
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: courses-review
+      app.kubernetes.io/name: penn-courses-review
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -695,7 +695,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: courses-review
+        app.kubernetes.io/name: penn-courses-review
     spec:
       containers:
         - env:
@@ -717,10 +717,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-review
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-review
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-review
+  name: penn-courses-review
 spec:
   rules:
     - host: penncoursereview.org
@@ -728,7 +728,7 @@ spec:
         paths:
           - backend:
               service:
-                name: courses-review
+                name: penn-courses-review
                 port:
                   number: 80
             path: /
@@ -760,10 +760,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-load-courses
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-load-courses
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-load-courses
+  name: penn-courses-load-courses
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -793,10 +793,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: courses-report-stats
-    app.kubernetes.io/part-of: courses
+    app.kubernetes.io/name: penn-courses-report-stats
+    app.kubernetes.io/part-of: penn-courses
     app.kubernetes.io/version: TAG_FROM_CI
-  name: courses-report-stats
+  name: penn-courses-report-stats
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:

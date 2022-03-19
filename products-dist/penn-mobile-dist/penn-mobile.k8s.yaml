@@ -3,16 +3,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-django
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-django
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-django
+  name: penn-mobile-django
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: mobile-django
+    app.kubernetes.io/name: penn-mobile-django
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -20,15 +20,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-django
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-django
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-django
+  name: penn-mobile-django
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: mobile-django
+      app.kubernetes.io/name: penn-mobile-django
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -37,7 +37,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: mobile-django
+        app.kubernetes.io/name: penn-mobile-django
     spec:
       containers:
         - env:
@@ -62,10 +62,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-django
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-django
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-django
+  name: penn-mobile-django
 spec:
   rules:
     - host: studentlife.pennlabs.org
@@ -73,7 +73,7 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: penn-mobile-django
                 port:
                   number: 80
             path: /
@@ -83,14 +83,14 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: penn-mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: mobile-django
+                name: penn-mobile-django
                 port:
                   number: 80
             path: /assets
@@ -100,14 +100,14 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-django
+                name: penn-mobile-django
                 port:
                   number: 80
             path: /api
             pathType: Prefix
           - backend:
               service:
-                name: mobile-django
+                name: penn-mobile-django
                 port:
                   number: 80
             path: /assets
@@ -162,16 +162,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-react
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-react
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-react
+  name: penn-mobile-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: mobile-react
+    app.kubernetes.io/name: penn-mobile-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -179,15 +179,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-react
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-react
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-react
+  name: penn-mobile-react
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: mobile-react
+      app.kubernetes.io/name: penn-mobile-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -196,7 +196,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: mobile-react
+        app.kubernetes.io/name: penn-mobile-react
     spec:
       containers:
         - env:
@@ -218,10 +218,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-react
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-react
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-react
+  name: penn-mobile-react
 spec:
   rules:
     - host: portal.pennmobile.org
@@ -229,7 +229,7 @@ spec:
         paths:
           - backend:
               service:
-                name: mobile-react
+                name: penn-mobile-react
                 port:
                   number: 80
             path: /
@@ -261,10 +261,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: mobile-get-laundry-snapshots
-    app.kubernetes.io/part-of: mobile
+    app.kubernetes.io/name: penn-mobile-get-laundry-snapshots
+    app.kubernetes.io/part-of: penn-mobile
     app.kubernetes.io/version: TAG_FROM_CI
-  name: mobile-get-laundry-snapshots
+  name: penn-mobile-get-laundry-snapshots
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:

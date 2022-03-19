@@ -3,16 +3,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-redis
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-redis
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-redis
+  name: penn-clubs-redis
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    app.kubernetes.io/name: clubs-redis
+    app.kubernetes.io/name: penn-clubs-redis
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -20,15 +20,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-redis
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-redis
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-redis
+  name: penn-clubs-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-redis
+      app.kubernetes.io/name: penn-clubs-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -37,7 +37,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-redis
+        app.kubernetes.io/name: penn-clubs-redis
     spec:
       containers:
         - env:
@@ -55,16 +55,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-asgi
+  name: penn-clubs-django-asgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-django-asgi
+    app.kubernetes.io/name: penn-clubs-django-asgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -72,15 +72,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-asgi
+  name: penn-clubs-django-asgi
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-django-asgi
+      app.kubernetes.io/name: penn-clubs-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -89,7 +89,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-django-asgi
+        app.kubernetes.io/name: penn-clubs-django-asgi
     spec:
       containers:
         - command:
@@ -118,10 +118,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-asgi
+  name: penn-clubs-django-asgi
 spec:
   rules:
     - host: pennclubs.com
@@ -129,7 +129,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-django-asgi
+                name: penn-clubs-django-asgi
                 port:
                   number: 80
             path: /api/ws
@@ -161,16 +161,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-wsgi
+  name: penn-clubs-django-wsgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-django-wsgi
+    app.kubernetes.io/name: penn-clubs-django-wsgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -178,15 +178,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-wsgi
+  name: penn-clubs-django-wsgi
 spec:
   replicas: 5
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-django-wsgi
+      app.kubernetes.io/name: penn-clubs-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -195,7 +195,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-django-wsgi
+        app.kubernetes.io/name: penn-clubs-django-wsgi
     spec:
       containers:
         - env:
@@ -222,10 +222,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-django-wsgi
+  name: penn-clubs-django-wsgi
 spec:
   rules:
     - host: pennclubs.com
@@ -233,7 +233,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-django-wsgi
+                name: penn-clubs-django-wsgi
                 port:
                   number: 80
             path: /api
@@ -265,16 +265,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-react
+  name: penn-clubs-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-react
+    app.kubernetes.io/name: penn-clubs-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -282,15 +282,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-react
+  name: penn-clubs-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-react
+      app.kubernetes.io/name: penn-clubs-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -299,7 +299,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-react
+        app.kubernetes.io/name: penn-clubs-react
     spec:
       containers:
         - env:
@@ -321,10 +321,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-react
+  name: penn-clubs-react
 spec:
   rules:
     - host: pennclubs.com
@@ -332,7 +332,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-react
+                name: penn-clubs-react
                 port:
                   number: 80
             path: /
@@ -364,16 +364,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-redis
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-redis
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-redis
+  name: penn-clubs-hub-redis
 spec:
   ports:
     - port: 6379
       targetPort: 6379
   selector:
-    app.kubernetes.io/name: clubs-hub-redis
+    app.kubernetes.io/name: penn-clubs-hub-redis
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -381,15 +381,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-redis
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-redis
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-redis
+  name: penn-clubs-hub-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-hub-redis
+      app.kubernetes.io/name: penn-clubs-hub-redis
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -398,7 +398,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-hub-redis
+        app.kubernetes.io/name: penn-clubs-hub-redis
     spec:
       containers:
         - env:
@@ -416,16 +416,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-asgi
+  name: penn-clubs-hub-django-asgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-hub-django-asgi
+    app.kubernetes.io/name: penn-clubs-hub-django-asgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -433,15 +433,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-asgi
+  name: penn-clubs-hub-django-asgi
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-hub-django-asgi
+      app.kubernetes.io/name: penn-clubs-hub-django-asgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -450,7 +450,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-hub-django-asgi
+        app.kubernetes.io/name: penn-clubs-hub-django-asgi
     spec:
       containers:
         - command:
@@ -481,10 +481,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-asgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-asgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-asgi
+  name: penn-clubs-hub-django-asgi
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -492,7 +492,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-django-asgi
+                name: penn-clubs-hub-django-asgi
                 port:
                   number: 80
             path: /api/ws
@@ -524,16 +524,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-wsgi
+  name: penn-clubs-hub-django-wsgi
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-hub-django-wsgi
+    app.kubernetes.io/name: penn-clubs-hub-django-wsgi
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -541,15 +541,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-wsgi
+  name: penn-clubs-hub-django-wsgi
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-hub-django-wsgi
+      app.kubernetes.io/name: penn-clubs-hub-django-wsgi
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -558,7 +558,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-hub-django-wsgi
+        app.kubernetes.io/name: penn-clubs-hub-django-wsgi
     spec:
       containers:
         - env:
@@ -587,10 +587,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-django-wsgi
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-django-wsgi
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-django-wsgi
+  name: penn-clubs-hub-django-wsgi
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -598,7 +598,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-django-wsgi
+                name: penn-clubs-hub-django-wsgi
                 port:
                   number: 80
             path: /api
@@ -630,16 +630,16 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-react
+  name: penn-clubs-hub-react
 spec:
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app.kubernetes.io/name: clubs-hub-react
+    app.kubernetes.io/name: penn-clubs-hub-react
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -647,15 +647,15 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-react
+  name: penn-clubs-hub-react
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: clubs-hub-react
+      app.kubernetes.io/name: penn-clubs-hub-react
   strategy:
     rollingUpdate:
       maxSurge: 3
@@ -664,7 +664,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: clubs-hub-react
+        app.kubernetes.io/name: penn-clubs-hub-react
     spec:
       containers:
         - env:
@@ -688,10 +688,10 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-react
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-react
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-react
+  name: penn-clubs-hub-react
 spec:
   rules:
     - host: hub.provost.upenn.edu
@@ -699,7 +699,7 @@ spec:
         paths:
           - backend:
               service:
-                name: clubs-hub-react
+                name: penn-clubs-hub-react
                 port:
                   number: 80
             path: /
@@ -731,10 +731,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-rank-clubs
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-rank-clubs
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-rank-clubs
+  name: penn-clubs-rank-clubs
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -764,10 +764,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-daily-notifications
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-daily-notifications
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-daily-notifications
+  name: penn-clubs-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -797,10 +797,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-daily-notifications
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-daily-notifications
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-daily-notifications
+  name: penn-clubs-hub-daily-notifications
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -830,10 +830,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-calendar-import
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-calendar-import
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-calendar-import
+  name: penn-clubs-calendar-import
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -863,10 +863,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-calendar-import
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-calendar-import
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-calendar-import
+  name: penn-clubs-hub-calendar-import
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -896,10 +896,10 @@ kind: CronJob
 metadata:
   labels:
     app.kubernetes.io/managed-by: kittyhawk
-    app.kubernetes.io/name: clubs-hub-paideia-calendar-import
-    app.kubernetes.io/part-of: clubs
+    app.kubernetes.io/name: penn-clubs-hub-paideia-calendar-import
+    app.kubernetes.io/part-of: penn-clubs
     app.kubernetes.io/version: TAG_FROM_CI
-  name: clubs-hub-paideia-calendar-import
+  name: penn-clubs-hub-paideia-calendar-import
 spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
