@@ -148,8 +148,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennclubs-com
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: pennclubs-com
 spec:
   dnsNames:
@@ -257,8 +255,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennclubs-com
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: pennclubs-com
 spec:
   dnsNames:
@@ -361,8 +357,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennclubs-com
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: pennclubs-com
 spec:
   dnsNames:
@@ -526,8 +520,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: hub-provost-upenn-edu
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -637,8 +629,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: hub-provost-upenn-edu
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: hub-provost-upenn-edu
 spec:
   dnsNames:
@@ -743,8 +733,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: hub-provost-upenn-edu
-    app.kubernetes.io/part-of: penn-clubs
-    app.kubernetes.io/version: TAG_FROM_CI
   name: hub-provost-upenn-edu
 spec:
   dnsNames:

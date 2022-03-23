@@ -29,11 +29,7 @@ export class LabsApiServerChart extends PennLabsChart {
       djangoSettingsModule: 'labs_api_server.settings.production',
     });
 
-    new RedisApplication(this, 'redis', {
-      deployment: {
-        tag: '5',
-      }
-    });
+    new RedisApplication(this, 'redis', {});
 
     new CronJob(this, 'laundry', {
       schedule: cronTime.every(15).minutes(),

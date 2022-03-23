@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-flask
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-flask
 spec:
   ports:
@@ -22,7 +22,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-flask
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-flask
 spec:
   replicas: 1
@@ -46,11 +46,11 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: labs_api_server.settings.production
             - name: GIT_SHA
-              value: TAG_FROM_CI
+              value: 268254084d01a9ca313ca8c3d1220c43f164d55b
           envFrom:
             - secretRef:
                 name: labs-api-server
-          image: pennlabs/labs-api-server:TAG_FROM_CI
+          image: pennlabs/labs-api-server:268254084d01a9ca313ca8c3d1220c43f164d55b
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -74,7 +74,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-flask
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-flask
 spec:
   rules:
@@ -102,8 +102,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: pennlabs-org
-    app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
   name: pennlabs-org
 spec:
   dnsNames:
@@ -122,7 +120,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-redis
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-redis
 spec:
   ports:
@@ -139,7 +137,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-redis
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-redis
 spec:
   replicas: 1
@@ -159,8 +157,8 @@ spec:
       containers:
         - env:
             - name: GIT_SHA
-              value: TAG_FROM_CI
-          image: redis:5
+              value: 268254084d01a9ca313ca8c3d1220c43f164d55b
+          image: redis:6.0
           imagePullPolicy: IfNotPresent
           name: worker
           ports:
@@ -174,7 +172,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-laundry
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-laundry
 spec:
   failedJobsHistoryLimit: 1
@@ -188,11 +186,11 @@ spec:
                 - cron/save_laundry_data.py
               env:
                 - name: GIT_SHA
-                  value: TAG_FROM_CI
+                  value: 268254084d01a9ca313ca8c3d1220c43f164d55b
               envFrom:
                 - secretRef:
                     name: labs-api-server
-              image: pennlabs/labs-api-server:TAG_FROM_CI
+              image: pennlabs/labs-api-server:268254084d01a9ca313ca8c3d1220c43f164d55b
               imagePullPolicy: IfNotPresent
               name: worker
           restartPolicy: Never
@@ -206,7 +204,7 @@ metadata:
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: labs-api-server-gsr-notifications
     app.kubernetes.io/part-of: labs-api-server
-    app.kubernetes.io/version: TAG_FROM_CI
+    app.kubernetes.io/version: 268254084d01a9ca313ca8c3d1220c43f164d55b
   name: labs-api-server-gsr-notifications
 spec:
   failedJobsHistoryLimit: 1
@@ -220,11 +218,11 @@ spec:
                 - cron/send_gsr_push_notifications.py
               env:
                 - name: GIT_SHA
-                  value: TAG_FROM_CI
+                  value: 268254084d01a9ca313ca8c3d1220c43f164d55b
               envFrom:
                 - secretRef:
                     name: labs-api-server
-              image: pennlabs/labs-api-server:TAG_FROM_CI
+              image: pennlabs/labs-api-server:268254084d01a9ca313ca8c3d1220c43f164d55b
               imagePullPolicy: IfNotPresent
               name: worker
               volumeMounts:

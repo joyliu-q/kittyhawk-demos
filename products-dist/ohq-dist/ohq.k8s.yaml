@@ -96,8 +96,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: ohq-io
-    app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-io
 spec:
   dnsNames:
@@ -219,8 +217,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: ohq-io
-    app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-io
 spec:
   dnsNames:
@@ -323,8 +319,6 @@ metadata:
     app.kubernetes.io/component: certificate
     app.kubernetes.io/managed-by: kittyhawk
     app.kubernetes.io/name: ohq-io
-    app.kubernetes.io/part-of: ohq
-    app.kubernetes.io/version: TAG_FROM_CI
   name: ohq-io
 spec:
   dnsNames:

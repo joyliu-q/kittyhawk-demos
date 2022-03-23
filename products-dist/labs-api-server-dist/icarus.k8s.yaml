@@ -1,0 +1,222 @@
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "labs-api-server-flask"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: "labs-api-server-flask"
+---
+# Source: icarus/templates/services.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "labs-api-server-redis"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    name: "labs-api-server-redis"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "labs-api-server-flask"
+  namespace: default
+  labels:
+    name: "labs-api-server-flask"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "labs-api-server-flask"
+  template:
+    metadata:
+      labels:
+        name: "labs-api-server-flask"
+    spec:
+      containers:
+        - name: "worker"
+          image: "pennlabs/labs-api-server:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: labs-api-server
+          volumeMounts:
+            - name: "labs-api-server-ios-key"
+              mountPath: "/app/ios_key.p8"
+              subPath: "IOS_KEY"
+      volumes:
+        - name: "labs-api-server-ios-key"
+          secret:
+            secretName: "labs-api-server"
+            items:
+              - key: "IOS_KEY"
+                path: "IOS_KEY"
+---
+# Source: icarus/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "labs-api-server-redis"
+  namespace: default
+  labels:
+    name: "labs-api-server-redis"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "labs-api-server-redis"
+  template:
+    metadata:
+      labels:
+        name: "labs-api-server-redis"
+    spec:
+      containers:
+        - name: "worker"
+          image: "redis:6.0rc"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "labs-api-server-laundry"
+  namespace: default
+  labels:
+    name: "labs-api-server-laundry"
+spec:
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/labs-api-server:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python3"
+                - "cron/save_laundry_data.py"
+              envFrom:
+                - secretRef:
+                    name: labs-api-server
+---
+# Source: icarus/templates/crontabs.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "labs-api-server-gsr-notifications"
+  namespace: default
+  labels:
+    name: "labs-api-server-gsr-notifications"
+spec:
+  schedule: "20,50 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: "worker"
+              image: pennlabs/labs-api-server:6.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - "python3"
+                - "cron/send_gsr_push_notification.py"
+                - "0"
+              envFrom:
+                - secretRef:
+                    name: labs-api-server
+              volumeMounts:
+                - name: "labs-api-server-ios-key"
+                  mountPath: "/app/ios_key.p8"
+                  subPath: "IOS_KEY"
+          volumes:
+            - name: "labs-api-server-ios-key"
+              secret:
+                secretName: "labs-api-server"
+                items:
+                  - key: "IOS_KEY"
+                    path: "IOS_KEY"
+---
+# Source: icarus/templates/ingresses.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: labs-api-server-flask
+  namespace: default
+spec:
+  rules:
+    - host: "api.pennlabs.org"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: labs-api-server-flask
+              servicePort: 80
+    - host: "alternativedomain.com"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: labs-api-server-flask
+              servicePort: 80
+  tls:
+    - hosts:
+        - "api.pennlabs.org"
+      secretName: pennlabs-org-tls
+    - hosts:
+        - "alternativedomain.com"
+      secretName: alternativedomain-com-tls
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: alternativedomain-com
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: alternativedomain-com-tls
+  dnsNames:
+    - "alternativedomain.com"
+    - "*.alternativedomain.com"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: icarus/templates/certificates.yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: pennlabs-org
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  secretName: pennlabs-org-tls
+  dnsNames:
+    - "pennlabs.org"
+    - "*.pennlabs.org"
+  issuerRef:
+    name: wildcard-letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io

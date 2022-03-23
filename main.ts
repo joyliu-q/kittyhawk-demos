@@ -32,7 +32,7 @@ switch (process.env.RELEASE_NAME) {
     new OHQChart(app, 'ohq');
     break;
   case 'labs-api-server':
-    process.env.GIT_SHA = "TAG_FROM_CI";
+    process.env.GIT_SHA = "268254084d01a9ca313ca8c3d1220c43f164d55b";
     new LabsApiServerChart(app, 'labs-api-server');
     break;
   default:
