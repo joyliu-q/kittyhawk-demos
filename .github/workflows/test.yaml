@@ -23,7 +23,6 @@ jobs:
         env:
           GIT_SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       - name: Deployment Test
         run: |-
           # get repo name from synth step
