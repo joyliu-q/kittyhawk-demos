@@ -10,9 +10,6 @@ jobs:
       - id: synth
         name: Synth cdk8s manifests
         run: |-
-          cd k8s
-          yarn install --frozen-lockfile
-
           # get repo name (by removing owner/organization)
           export RELEASE_NAME=\${REPOSITORY#*/}
 
