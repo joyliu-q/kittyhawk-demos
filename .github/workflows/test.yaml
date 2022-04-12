@@ -34,3 +34,6 @@ jobs:
           echo $IS_FEATURE_BRANCH
           echo $PR_NUMBER
           echo $RELEASE_NAME
+        env:
+          GIT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
