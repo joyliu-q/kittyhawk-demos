@@ -15,8 +15,6 @@ jobs:
 
           # Export RELEASE_NAME as an output
           echo "::set-output name=RELEASE_NAME::$RELEASE_NAME"
-
-          # yarn build
         env:
           GIT_SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
@@ -31,8 +29,3 @@ jobs:
             export PR_NUMBER=\${{ github.event.number }}
             export RELEASE_NAME=$RELEASE_NAME-pr-\${{ github.event.number }}
           fi
-
-          # Check env variables
-          echo $IS_FEATURE_BRANCH
-          echo $PR_NUMBER
-          echo $RELEASE_NAME
