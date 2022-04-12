@@ -36,6 +36,3 @@ jobs:
           echo $IS_FEATURE_BRANCH
           echo $PR_NUMBER
           echo $RELEASE_NAME
-          
-          # See yaml file lol
-          # cat k8s/dist/pennlabs.k8s.yaml
