@@ -2,6 +2,8 @@
 # Generated as part of the 'application' stack.
 name: Build and Deploy
 on: push
+env:
+  PR_NUMBER: ${{ github.event.pull_request.number }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -37,4 +39,3 @@ jobs:
           GIT_REF: ${{ github.ref }}
           GIT_SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.number }}
