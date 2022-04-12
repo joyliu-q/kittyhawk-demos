@@ -10,7 +10,7 @@ generate_yaml () {
   then
       mkdir -p "./products-dist/$PRODUCT-dist"
   fi
-  cat ./dist/$PRODUCT.k8s.yaml > ./products-dist/$PRODUCT-dist/$PRODUCT.k8s.yaml 
+  cat ./dist/pennlabs.k8s.yaml > ./products-dist/$PRODUCT-dist/$PRODUCT.k8s.yaml 
 }
 
 # Build for all products
