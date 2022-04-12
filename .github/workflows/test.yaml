@@ -29,3 +29,8 @@ jobs:
             export PR_NUMBER=\${{ github.event.number }}
             export RELEASE_NAME=$RELEASE_NAME-pr-\${{ github.event.number }}
           fi
+
+          # Check env variables
+          echo $IS_FEATURE_BRANCH
+          echo $PR_NUMBER
+          echo $RELEASE_NAME
