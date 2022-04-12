@@ -26,7 +26,7 @@ jobs:
           echo $GIT_REF
 
           # check for feature-branch deployment set-up
-          if $GIT_REF != 'refs/heads/main'; 
+          if [[ $GIT_REF != 'refs/heads/main' ]]; 
           then
             export IS_FEATURE_BRANCH=true;
             export PR_NUMBER=\${{ github.event.number }};
