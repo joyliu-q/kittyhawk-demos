@@ -27,7 +27,7 @@ jobs:
           if [[ $GIT_REF != 'refs/heads/main' ]]; 
           then
             export IS_FEATURE_BRANCH=true;
-            export RELEASE_NAME=$RELEASE_NAME-pr-$PR_NAME;
+            export RELEASE_NAME=$RELEASE_NAME-pr-$PR_NUMBER;
           fi;
 
           # Check env variables
