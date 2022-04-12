@@ -23,21 +23,18 @@ jobs:
           # get repo name from synth step
           RELEASE_NAME=\${{ steps.synth.outputs.RELEASE_NAME }}
 
-          echo $GIT_REF
-
           # check for feature-branch deployment set-up
           if [[ $GIT_REF != 'refs/heads/main' ]]; 
           then
             export IS_FEATURE_BRANCH=true;
-            export PR_NUMBER=\${{ github.event.number }};
-            export RELEASE_NAME=$RELEASE_NAME-pr-\${{ github.event.number }};
+            export RELEASE_NAME=$RELEASE_NAME-pr-$PR_NAME;
           fi;
 
           # Check env variables
           echo $IS_FEATURE_BRANCH
-          echo $PR_NUMBER
           echo $RELEASE_NAME
         env:
           GIT_REF: ${{ github.ref }}
           GIT_SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
